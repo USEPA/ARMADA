@@ -1,0 +1,124 @@
+.btn-default {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+}
+
+#custom {
+  padding-bottom: 50px;
+}
+
+#custom .container {
+    position: relative;
+}
+
+#custom .navbar-default {
+    background-color: #005DA4;
+}
+
+#custom .navbar-default .navbar-nav>li>a {
+    color: white;
+}
+
+#custom .navbar-default .navbar-nav>.active>a {
+    background-color: rgb(0, 150, 214);
+}
+
+#custom .navbar-brand {
+    color: white;
+    font-weight: bold;
+}
+
+#custom .dash-container {
+    display: flex;
+    width: calc(100% - 240px);
+}
+
+@media (max-width: 940px) {
+    #custom .dash-container {
+        width: 100%;
+    }
+}
+
+#custom .chart-container {
+    width: 100%;
+    position: relative;
+}
+
+#custom #allindicators {
+    width: 100%;
+    position: relative;
+}
+
+#custom #oneindicator {
+    width: 100%;
+    position: relative;
+}
+
+#custom .data-upload-container {
+  padding: 20px;
+}
+
+#custom .download-button {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+#custom .controls-container {
+    width: 240px;
+    padding-left: 20px;
+
+    position: absolute;
+    right: 0px;
+    top: 0px;
+}
+
+@media (max-width: 940px) {
+  #custom .controls-container {
+    width: 100%;
+    padding: 10px;
+    position: relative;
+  }
+}
+
+#custom .tooltip {
+    box-sizing: border-box;
+    position: absolute;
+    display: none;
+    top: 0;
+    left: -100000000px;
+    padding: 8px 12px;
+    font-size: 12px;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #333;
+    border-radius: 4px;
+    pointer-events: none;
+
+    opacity: 1;
+
+}
+
+#custom div.tooltip p {
+    margin: 0;
+}
+
+#custom .comp-tooltip {
+    background-color: lightgray;
+}
+
+#custom .shiny-input-container:not(.shiny-input-container-inline) {
+    width: 100%;
+}
+
+#custom .navbar-default .navbar-toggle .icon-bar {
+  background-color: white;
+}
+
+#custom .navbar-default .navbar-toggle:focus, .navbar-default .navbar-toggle:hover {
+  background-color: #0096D6;
+}
+
+style attribute {
+    font-size: 14px;
+}
