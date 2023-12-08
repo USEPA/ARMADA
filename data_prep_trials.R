@@ -37,11 +37,13 @@ surveys <- list_flatten(data$surveys[[1]][["surveyWaterGroups"]]) %>%
 
 
 df <- as.data.frame(do.call(rbind, lapply(surveys , as.data.frame))) %>% 
-  mutate(YEAR=sub("\\..*","",row.names(.)), .before=waterTypeGroupCode)
+  mutate(Year=sub("\\..*","",row.names(.)), .before=waterTypeGroupCode)
 resource <- pluck(df$waterTypeGroupCode)
 subpop <- pluck(df$subPopulationCode)
-year <- pluck(df$YEAR)
+year <- pluck(df$Year)
 units <- pluck(df$unitCode)
+# survey_comment <- df %>% mutate(Year=as.numeric(Year)) %>% filter(Year==max(Year)) %>% 
+#   select(T1_Year=Year, Resource=waterTypeGroupCode, survey_comment=surveyWaterGroupCommentText) %>% remove_rownames() %>% mutate(survey_comment = if_else(is.na(survey_comment ),"",survey_comment))
 
 df2 <- list_flatten(df$surveyWaterGroupUseParameters) %>%
   set_names(paste0(year,"_",resource,"_",subpop,"_",units))
@@ -130,11 +132,19 @@ for(i in 2:length(grep(x = colnames(all_surveys), pattern = ".P.Estimate"))) {
   }
 }
 
+resource_comment <- data %>% select()
+
 
 all_surveys <- all_surveys %>%
+  #left_join(survey_comment) %>%
   mutate(Subpopulation = paste0(Subpopulation," (",Units,")")) %>%
-  mutate(commentText = if_else(is.na(commentText),"",commentText)) %>%
-  #This will remove columns if past surveys were differnt than current surveys
+  #adding comments and a sort dummy variable to put Designated use estimates below stressors and OVERALL at bottom of dashboard
+  mutate(commentText = if_else(is.na(commentText),"",commentText),
+         USEsort = case_when(surveyUseCode==Indicator ~ "B",
+                          TRUE ~ "A"),
+         OVERALLsort = case_when(str_detect(Indicator, "OVERALL|Overall") ~ "Z",
+                             TRUE ~ "A")) %>%
+  #This will remove columns if past surveys were different than current surveys
   #select_if(~any(!is.na(.))) %>%
   mutate_at(vars(contains("UCB")), ~ifelse((.>100), 100, .)) %>%
   mutate_at(vars(contains("LCB")), ~ifelse((.<0), 0, .)) %>%
@@ -144,11 +154,12 @@ all_surveys <- all_surveys %>%
                                TRUE ~ str_to_title(Indicator)),
          Condition = str_to_title(Condition),
          Resource = str_to_title(Resource)) %>%
-  arrange(surveyUseCode, Subpopulation) %>%
-  arrange(factor(Condition, levels = c("Excellent", "Excellent Condition", "Very Good", "PASS", "Good", "Optimal", "Supporting Use", "Meeting", "Fully Supporting", "Fully supporting", "Meets", "Supports", "Support", "Not Detected", "At or Below Benchmark", "Low", "Attaining", "Good Condition", "Least Disturbed",
+  arrange(OVERALLsort, Subpopulation, surveyUseCode, USEsort) %>%
+  arrange(factor(Condition, levels = c("Excellent", "Excellent Condition", "Very Good", "Pass", "Good", "Optimal", "Supporting Use", "Meeting", "Fully Supporting", "Fully supporting", "Meets", "Supports", "Support", "Not Detected", "At or Below Benchmark", "Low", "Attaining", "Good Condition", "Least Disturbed",
                                        "Fair", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate",
-                                       "Poor", "FAIL", "Not Supporting Use", "Violating", "Not Supporting", "Suboptimal", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed",
-                                       "Missing", "Not Assessed")))
+                                       "Poor", "Fail", "Not Supporting Use", "Violating", "Not Supporting", "Suboptimal", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed",
+                                       "Missing", "Not Assessed","Insufficient Information")))
+  
 
 
 all_surveys

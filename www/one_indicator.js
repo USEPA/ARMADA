@@ -43,7 +43,8 @@ r2d3.onRender(function(data, svg, width, height, options) {
     let y_axis_cond_est = g => g
         .attr("transform", `translate(${margin.left},0)`)
         .style("font-size", large_font_size)
-        .call(d3.axisLeft(y_cond_est).tickFormat( i => primary_data[i]["Sig95_T1T2"] === "Y"? primary_data[i].Condition + '*': primary_data[i].Condition).tickSize(0))
+      //  .style('font-weight','bold')
+        .call(d3.axisLeft(y_cond_est).tickFormat( i => primary_data[i]? primary_data[i].Condition: primary_data[i].Condition).tickSize(0))
         .call(g => g.select(".domain").remove())
         .call(g => g.selectAll(".tick line").clone()
             .attr("stroke-opacity", default_stroke_opacity)
@@ -65,6 +66,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("transform", `translate(0,${margin.top})`)
         .style("font-size", medium_font_size)
         .style("color", light_text_color)
+        .style('font-weight','bold')
         .call(d3.axisTop(x_cond_est)
             .ticks(cond_est_width / 80)
             .tickSize(5)
@@ -146,6 +148,8 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("transform", `translate(0,${margin.top})`)
         .style("font-size", small_font_size)
         .style("color", light_text_color)
+        //.style("color", change_color)
+        .style('font-weight','bold')
         .call(d3.axisTop(x_change)
             .ticks(null)
             .tickSize(5)
@@ -164,6 +168,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("transform", `translate(0,${margin.top})`)
         .style("font-size", medium_font_size)
         .style("color", light_text_color)
+        .style('font-weight','bold')
         .call(d3.axisTop(x_long_term_change)
             .ticks(null)
             .tickSize(5)
@@ -255,6 +260,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("text-anchor", "end")
         .attr("font-family", "sans-serif")
         .attr("font-size", medium_font_size)
+      //  .style('font-weight','bold')
         .selectAll("text")
         .data(primary_data)
         .join("text")
@@ -343,7 +349,9 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .enter()
         .append("path")
         .attr("d", d3.symbol().type(d3.symbolDiamond))
-        .style("fill", (d) => d["Sig95_T1T2"] === "Y"? getMarkerSigColor(d["Condition"]): getMarkerColor(d["Condition"]))
+        //.style("fill", (d) => d["Sig95_T1T2"] === "Y"? getMarkerSigColor(d["Condition"]): getMarkerColor(d["Condition"]))
+        //.attr("fill", change_color)
+        .attr("fill", d => getMarkerColor(d["Condition"]))
         .attr("transform", (d, i) => `translate(${x_long_term_change(+d["T1T2_DIFF.P"])}, ${y_cond_est(i) + (y_cond_est.bandwidth()/2.0)})`)
         .attr("fill-opacity", d => d["T1T2_DIFF.P"] === null? 0.0: 1.0);
 
@@ -355,7 +363,9 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("x2", (d) => x_long_term_change(+d["UCB95.P.Diff.T2vT3.Condition"]))
         .attr("y1", (d, i) => y_cond_est(i) + (y_cond_est.bandwidth() / 2.0))
         .attr("y2", (d, i) => y_cond_est(i) + (y_cond_est.bandwidth() / 2.0))
-        .style("stroke", (d) => d["Sig95_T1T2"] === "Y"? getMarkerSigColor(d["Condition"]): getMarkerColor(d["Condition"]))
+        //.style("stroke", (d) => d["Sig95_T1T2"] === "Y"? getMarkerSigColor(d["Condition"]): getMarkerColor(d["Condition"]))
+        //.attr("fill", change_color)
+        .attr("fill", d => getMarkerColor(d["Condition"]))
         .attr("stroke-width", ci_bar_height);
 
     long_term_change_g.selectAll(".long-term-change-tooltip-bar")
@@ -380,7 +390,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("text-anchor", "middle")
         .attr("font-size", medium_font_size)
         .attr("fill", light_text_color)
-        .text(d => d["T1T2_DIFF.P"] === null? "Only One Time Period Available" : "");
+        .text(d => d["T1T2_DIFF.P"] === null? `No 20${T1} Data Available` : "");
 
 
     /*********************************************
@@ -391,5 +401,5 @@ r2d3.onRender(function(data, svg, width, height, options) {
 
     let controls_container_offset = 60.0;
     console.log("width one ", width);
-    d3.select("#custom .controls-container").style("margin-top", width < 740? "0px": ((width/dashboard_width) * controls_container_offset) + "px");
+    d3.select("#custom .controls-container").style("0px", width < 740? "0px": ((width/dashboard_width) * controls_container_offset) + "px");
 });

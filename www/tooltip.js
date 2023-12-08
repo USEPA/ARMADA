@@ -1,7 +1,7 @@
 let getCondEstTooltip = (d) => {
     return `<strong>${d['Indicator']} | ${d['Condition']} | ${d['Subpopulation']}</strong><br>
             ${tip_format(d['T1.P.Estimate'])}% 
-            (${tip_format(d['T1.LCB'])} to ${tip_format(d['T1.UCB'])}% @ ${tip_format(d['confidenceLevel'])}% confidence interval) <hr style="margin: 10px;">
+            (${tip_format(d['T1.LCB'])} to ${tip_format(d['T1.UCB'])}% @ ${tip_format(d['confidenceLevel'])}% confidence level) <hr style="margin: 10px;">
            <em> Explanation: In ${d['T1_Year']}, ${tip_format(d['T1.P.Estimate'])}% of ${d['Resource']} resources were in ${d['Condition']} category for ${d['Indicator']}. The confidence interval for this estimate is ${tip_format(d['T1.LCB'])}% to ${tip_format(d['T1.UCB'])}%.</em>  <hr style="margin: 10px;">
            ${d['commentText']}`;
 }

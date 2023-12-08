@@ -3,7 +3,7 @@ source("ui_elements.R")
 addResourcePath(prefix = 'www', directoryPath = './www')
 ORGID <- c("Alaska"="AKDECWQ", "Arizona"="21ARIZ", "Colorado"="21COL001", "Connecticut"="CT_DEP01", "Florida"="21FL303D", "Iowa"="21IOWA", "Kansas"="21KAN001",
            "Massachusetts"="MA_DEP", "Missouri"="MDNR", "New Hampshire"="11113300", "North Dakota"="21NDHDWQ",
-           "Oklahoma"="OKDEQ", "Pennsylvania"="21PA", "South Carolina"="21SC60WQ", "South Dakota"="SDDENR", "Virginia"="21VASWCB",
+           "Oklahoma"="OKDEQ", "Pennsylvania"="21PA", "South Carolina"="21SC60WQ", "South Dakota"="SDDENR",
            "Vermont"="1VTDECWQ", "Virginia"="21VASWCB", "Wisconsin"="WIDNR", "Wyoming"="WYDEQ")
 # ORGID<-list(States=
 #               c("Alabama"="21AWIC","Alaska"="AKDECWQ","Arizona"="21ARIZ","Arkansas"="ARDEQH2O","California"="CA_SWRCB",
@@ -37,10 +37,11 @@ ui <-  tagList(
         id="tabs",
         column(12, align="center",
                tags$head(tags$style(HTML("
-             #org_idcover ~ .selectize-control.single .selectize-input {background-color: #FFD133; font-weight: bold;}
-             #org_id ~ .selectize-control.single .selectize-input {background-color: #FFD133; font-weight: bold;}
+             #org_idcover ~ .selectize-control.single .selectize-input {background-color: #FFD133; border-width: 3px; font-weight: bold;}
+             #org_id ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}
              .optgroup-header {color: black !important; font-weight: bold !important;}
              .shiny-output-error-validation {font-weight: bold; font-size: x-large}
+             .sweet-alert .sa-icon.sa-custom {background-position: top !important;}
              "))), 
              conditionalPanel(
                condition = 'input.org_idcover == ""',
@@ -50,20 +51,34 @@ ui <-  tagList(
                            width = "300px", 
                            c("Select State/Territory"="", ORGID)
                )
+             ),
+             conditionalPanel(
+               condition = "input.org_idcover == ''",
+               column(12, align="left",
+                      strong("Section 305(b) of the Federal Clean Water Act (CWA) requires each State to monitor, assess and report on the quality of its waters relative to
+            designated uses established in accordance with state defined water quality standards. The data illustrated in the dashboard were collected using 
+            probability, or statistically based sampling, which allows states to extrapolate the results from the sample sites to the broader population of aquatic resources.
+            These dashboards allow users to view condition estimates for key indicators using benchmarks and condition categories set by each State."))
              )
         ),
         tabPanel(
-          "All Indicators, One Condition Category",
+          "Condition Summary View",
           value = "all_indicator",
-          allIndicatorsOneConditionCategory()
+          allIndicatorsOneConditionCategory(),
         ),
         tabPanel(
-          "One Indicator, All Condition Categories",
+          "Indicator Summary View",
           value = "one_indicator",
           oneIndicatorAllConditionCategories()
         ),
+        tabPanel(value="help",
+                 icon = icon('circle-info'),
+                 verify_fa = FALSE,
+                 span("Help",
+                      style = "font-style:italic;")
+        ),
         conditionalPanel(
-          condition = 'input.org_idcover != ""',
+          condition = "input.org_idcover !== ''",
           style = "display: none;",
           controlPanel()
         )
@@ -73,7 +88,30 @@ ui <-  tagList(
 )  
 
 server <- function(input, output, session) {
-  
+
+  observe_helpers()
+  rv = reactiveValues()
+
+  #trigger event on tab selection change
+  observeEvent(input$tabs, {
+    req(input$tabs %in% c("all_indicator","one_indicator"))
+    #store old current tab as last tab reactive value
+    rv$last_tab = input$tabs
+  })
+
+  observe({
+    req(input$tabs=="help")
+      shinyalert(
+                 imageUrl ='www/help_graphic.svg',
+                 closeOnClickOutside = TRUE,
+                 imageWidth = '900',
+                 imageHeight = '450',
+                 size = "l"
+      )
+      updateNavbarPage(session, "tabs",
+                       selected = rv$last_tab)
+  })
+
   statecover <- eventReactive(input$org_idcover,{
     req(input$org_idcover != "")
     statecover <- input$org_idcover
@@ -101,7 +139,7 @@ server <- function(input, output, session) {
     updateSelectInput(session,
                       "primary_subpop",
                       choices=Data() %>% filter(Resource==input$resource_pop) %>% select(Subpopulation) %>% unique() %>% 
-                        arrange(factor(Subpopulation, levels = c("Statewide"))) %>% pull()
+                        arrange(factor(Subpopulation, levels = c("Statewide (Miles)", "Statewide (Acres"))) %>% pull()
     )
   })
   observeEvent(c(input$primary_subpop, input$resource_pop, input$org_id), {
@@ -109,10 +147,10 @@ server <- function(input, output, session) {
                       "condition_category",
                       choices=Data() %>% filter(Resource==input$resource_pop & 
                                                 Subpopulation==input$primary_subpop) %>% select(Condition) %>% unique() %>%
-                        arrange(factor(Condition, levels = c("Excellent", "Excellent Condition", "Very Good", "Optimal", "PASS", "Good", "Supporting Use", "Meeting", "Fully Supporting", "Fully supporting", "Meets", "Supports", "Support", "Not Detected", "At or Below Benchmark", "Low", "Attaining", "Good Condition", "Least Disturbed",
+                        arrange(factor(Condition, levels = c("Excellent", "Excellent Condition", "Very Good", "Optimal", "Pass", "Good", "Supporting Use", "Meeting", "Fully Supporting", "Fully supporting", "Meets", "Supports", "Support", "Not Detected", "At or Below Benchmark", "Low", "Attaining", "Good Condition", "Least Disturbed",
                                                              "Fair", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate",
-                                                             "Poor", "FAIL", "Not Supporting Use", "Violating", "Suboptimal", "Not Supporting", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed",
-                                                             "Missing", "Not Assessed"))) %>% pull()
+                                                             "Poor", "Fail", "Not Supporting Use", "Violating", "Suboptimal", "Not Supporting", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed",
+                                                             "Missing", "Not Assessed", "Insufficient Information"))) %>% pull()
     )
     updateSelectInput(session,
                       "indicator",
@@ -121,6 +159,7 @@ server <- function(input, output, session) {
     )
   })
   
+
   observeEvent(c(input$primary_subpop, input$resource_pop, input$org_id), {
     req(ChangeYears())
     updateSelectInput(session,
@@ -184,7 +223,29 @@ server <- function(input, output, session) {
            Indicator == input$indicator)
   })
   
+
+  bg <- reactive({
+    case_when(input$condition_category %in% c("Fair", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate") ~ 
+                  '#condition_category ~ .selectize-control.single .selectize-input {border-color: #ffe083; border-width: 3px;
+                                        }',
+              input$condition_category %in% c("Poor", "Fail", "Not Supporting Use", "Violating", "Suboptimal", "Not Supporting", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed") ~ '#condition_category ~ .selectize-control.single .selectize-input {
+                                            border-color: #f99c9c; border-width: 3px;
+                                        }',
+              input$condition_category %in% c("Missing", "Not Assessed", "Insufficient Information") ~ '#condition_category ~ .selectize-control.single .selectize-input {
+                                            border-color: #e8ccbe; border-width: 3px;
+                                        }',
+              TRUE  ~ '#condition_category ~ .selectize-control.single .selectize-input {
+                border-color: #6ba3d6; border-width: 3px;
+                }')
+  })
   
+  
+  
+  output$background_change <- renderUI({
+    tagList(fluidPage(tags$style(HTML(bg()))))
+  })
+  
+
   
   #### All Indicators Dashboard ----
 observeEvent(input$changediff,{

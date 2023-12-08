@@ -15,6 +15,8 @@ r2d3.onRender(function(data, svg, width, height, options) {
 	  let units = options.units
 	  let T1 = options.T1
 	  let T2 = options.T2
+	  let indicator_label = "Indicator"
+	  
 	  let change = options.change
 	  let state = options.state
 	  let year = options.year
@@ -24,7 +26,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
 
     let comp_data = data.filter(d => d["Subpopulation"] === options.comp_subpop && primary_indicators.includes(d["Indicator"]));
     
-    
+
     /*********************************************
      * Condition Estimates Axes and Ranges
      *********************************************/
@@ -44,11 +46,22 @@ r2d3.onRender(function(data, svg, width, height, options) {
     let x_cond_est = d3.scaleLinear()
         .domain([0, 120])
         .range([margin.left, cond_est_width + margin.left]);
-        
+        //text wrap this
+   	let wrapper = d3.textwrap().bounds({height: 10, width: margin.left})
+   	
     let y_axis_cond_est = g => g
         .attr("transform", `translate(${margin.left},0)`)
         .style("font-size", large_font_size)
-        .call(d3.axisLeft(y_cond_est).tickFormat( i => primary_data[i]? primary_data[i].Indicator: primary_data[i].Indicator).tickSize(0))
+        .call(d3.axisLeft(y_cond_est).tickFormat( i => primary_data[i]["USEsort"] === "B"? primary_data[i].Indicator + '*': primary_data[i].Indicator).tickSize(0))
+        // bolds designated uses.
+        .call(g => g
+            .selectAll(".tick")
+            .style('font-weight', i => (primary_data[i]["USEsort"] === "B")? 'bold' : 'normal')
+        )
+        
+ //  	.selectAll(".tick text")
+  //        .call(wrapper, margin.left)
+          
         .call(g => g.select(".domain").remove())
         .call(g => g.selectAll(".tick line").clone()
             .attr("stroke-opacity", default_stroke_opacity)
@@ -57,6 +70,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
             .attr("x1", -margin.left)
             .attr("transform", (d, i) => `translate(0,${y_cond_est.bandwidth()})`)
         )
+        
         // Clone again but just draw the first line to make a top border
         .call(g => g.selectAll(".tick line").clone()
             .attr("stroke-opacity", (d, i) => i === 0 ? default_stroke_opacity : 0.0)
@@ -70,6 +84,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("transform", `translate(0,${margin.top})`)
         .style("font-size", medium_font_size)
         .style("color", light_text_color)
+        .style('font-weight','bold')
         .call(d3.axisTop(x_cond_est)
             .ticks(cond_est_width / 80)
             .tickSize(5)
@@ -111,6 +126,8 @@ r2d3.onRender(function(data, svg, width, height, options) {
         );
 
     let format = x_cond_est.tickFormat(20);
+    
+    
 
     /*********************************************
      * Change Axes and Ranges
@@ -151,6 +168,8 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("transform", `translate(0,${margin.top})`)
         .style("font-size", small_font_size)
         .style("color", light_text_color)
+        //.style("color", change_color)
+        .style('font-weight','bold')
         .call(d3.axisTop(x_change)
             .ticks(null)
             .tickSize(5)
@@ -169,6 +188,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("transform", `translate(0,${margin.top})`)
         .style("font-size", medium_font_size)
         .style("color", light_text_color)
+        .style('font-weight','bold')
         .call(d3.axisTop(x_long_term_change)
             .ticks(null)
             .tickSize(5)
@@ -199,7 +219,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
      * Create Dashboard Axis Bar and Footer
      *********************************************/
 
-    createDashAxisBar(svg, dashboard_width, x_cond_est, x_long_term_change, "Indicator", change, units);
+    createDashAxisBar(svg, dashboard_width, x_cond_est, x_long_term_change, indicator_label, change, units);
     createTitle("all", options);
     createFooter(svg, options);
 //    createWatermark(svg);
@@ -258,6 +278,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
     svg.append("g")
         .attr("text-anchor", "end")
         .attr("font-size", medium_font_size)
+        //.style('font-weight','bold')
         .selectAll("text")
         .data(primary_data)
         .join("text")
@@ -344,7 +365,8 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .enter()
         .append("path")
         .attr("d", d3.symbol().type(d3.symbolDiamond))
-        .style("fill", (d) => d["Sig95.Flag.Diff.T2vT3.Condition"] === "Y"? marker_sig_color:marker_color)
+        //.attr("fill", change_color)
+        //.style("fill", (d) => d["Sig95.Flag.Diff.T2vT3.Condition"] === "Y"? marker_sig_color:marker_color)
         .attr("transform", (d, i) => `translate(${x_long_term_change(+d["T1T2_DIFF.P"])}, ${y_cond_est(i) + (y_cond_est.bandwidth()/2.0)})`)
         .attr("fill-opacity", d => d["T1T2_DIFF.P"] === null? 0.0: 1.0);
 
@@ -356,7 +378,8 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("x2", (d) => x_long_term_change(+d["CHANGE_UCB"]))
         .attr("y1", (d, i) => y_cond_est(i) + (y_cond_est.bandwidth() / 2.0))
         .attr("y2", (d, i) => y_cond_est(i) + (y_cond_est.bandwidth() / 2.0))
-        .style("stroke", (d) => d["Sig95.Flag.Diff.T2vT3.Condition"] === "Y"? marker_sig_color:marker_color)
+        //.attr("fill", change_color)
+        //.style("stroke", (d) => d["Sig95.Flag.Diff.T2vT3.Condition"] === "Y"? marker_sig_color:marker_color)
         .attr("stroke-width", ci_bar_height);
 
     long_term_change_g.selectAll(".long-term-change-tooltip-bar")
@@ -382,7 +405,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("text-anchor", "middle")
         .attr("font-size", medium_font_size)
         .attr("fill", light_text_color)
-        .text(d => d["T1T2_DIFF.P"] === null? "Only One Time Period Available" : "");
+        .text(d => d["T1T2_DIFF.P"] === null? `No 20${T1} Data Available` : "");
 
 
     /*********************************************
@@ -390,9 +413,9 @@ r2d3.onRender(function(data, svg, width, height, options) {
      *********************************************/
     svg.selectAll(".tick line").attr("stroke", stroke_color);
     svg.selectAll("g").attr("font-family", dashboard_font_family);
-
+    
     let controls_container_offset = 60.0;
     console.log("width all ", width);
-    d3.select("#custom .controls-container").style("margin-top", width < 740? "0px": ((width/dashboard_width) * controls_container_offset) + "px");
+    d3.select("#custom .controls-container").style("0px", width < 740? "0px": ((width/dashboard_width) * controls_container_offset) + "px");
 
 });

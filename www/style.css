@@ -4,6 +4,7 @@
     border-color: #4cae4c;
 }
 
+
 #custom {
   padding-bottom: 50px;
 }
@@ -55,14 +56,6 @@
     position: relative;
 }
 
-#custom .data-upload-container {
-  padding: 20px;
-}
-
-#custom .download-button {
-  margin-right: 10px;
-  margin-bottom: 10px;
-}
 
 #custom .controls-container {
     width: 240px;

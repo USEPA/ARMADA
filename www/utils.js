@@ -99,14 +99,14 @@ function createDashAxisBar(svg, width, x_cond_est, x_long_term_change, cond_est_
    		.attr("text-anchor", "middle")
    		.attr("x", cond_est_width + margin.left + (change_width/2.0))
    		.attr("y", dash_axis_text_y)
-   		.style("fill", "#f07857")
+   		//.attr("fill", change_color)
    		.text("Change");
    	
    	dash_axis_bar.append("text")
    		.attr("text-anchor", "middle")
    		.attr("x", x_long_term_change(0))
    		.attr("y", dash_axis_text_y)
-   		.style("fill", "#f07857")
+      //.attr("fill", change_color)
    		.text(change);
    		
 }
@@ -141,15 +141,15 @@ function createFooter(svg, options) {
 
 	let footer = svg.append("g").attr("class", "footer");
 
- //  	footer.append("text")
- //  		.attr("text-anchor", "left")
- //  		.attr("x", 0)
- //  		.attr("y", options.height - margin.bottom + footnote_top_padding)
-  // 		.text("*");
-
    	footer.append("text")
    		.attr("text-anchor", "left")
    		.attr("x", 0)
+   		.attr("y", options.height - margin.bottom + footnote_top_padding)
+   		.text("*");
+
+   	footer.append("text")
+   		.attr("text-anchor", "left")
+   		.attr("x", asterisk_offset)
    		.attr("y", options.height - margin.bottom + footnote_top_padding)
    		.text(significance_footnote);
 
@@ -164,15 +164,17 @@ function createFooter(svg, options) {
    	svg.selectAll('.footer text').call(wrap);
 }
 
+
+
 function createTitle(view, options) { // primary_subpop, comparison_subpop, condition, indicator) {
   // options.primary_subpop, options.comp_subpop, options.condition, nul
 	let header = svg.append("g").attr("class", "header");
 
-	let title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>${options.year} ${options.primary_subpop} Estimates and Change Over Time`;
+	let title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>${options.primary_subpop} Estimates and ${options.change}`;
 	if (view === "one") {
-		title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1>${options.year} ${options.primary_subpop} Estimates and Change Over Time | ${options.indicator}`;
+		title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.indicator}</u></b> | ${options.primary_subpop} Estimates and ${options.change}`;
 	}
-
+//<span style="color:blue">
    	header.append("text")
    		.attr("text-anchor", "left")
    		.attr("x", 0)
