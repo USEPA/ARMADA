@@ -20,6 +20,7 @@
 #url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=21COL001")
 # ATTAINS API ----
 # Connect to ATTAINS database and pull survey data by Organization ID 
+
 url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=",input$org_id)
 res <- GET(url) 
 json<- fromJSON(rawToChar(res$content))
@@ -28,6 +29,8 @@ data <- json$items
 shiny::validate(
   need(length(data)!=0, 'Data Not Available for State/Territory.')
 )
+
+show_modal_spinner(spin = "circle", text = 'Fetching Data')
 
 #Format Survey Data ----
 year <- pluck(data[["surveys"]][[1]][["year"]])
@@ -42,8 +45,9 @@ resource <- pluck(df$waterTypeGroupCode)
 subpop <- pluck(df$subPopulationCode)
 year <- pluck(df$Year)
 units <- pluck(df$unitCode)
-# survey_comment <- df %>% mutate(Year=as.numeric(Year)) %>% filter(Year==max(Year)) %>% 
-#   select(T1_Year=Year, Resource=waterTypeGroupCode, survey_comment=surveyWaterGroupCommentText) %>% remove_rownames() %>% mutate(survey_comment = if_else(is.na(survey_comment ),"",survey_comment))
+survey_comment <- df %>% mutate(Year=as.numeric(Year)) %>% filter(Year==max(Year)) %>%
+  select(T1_Year=Year, Resource=waterTypeGroupCode, Subpopulation=subPopulationCode, Units=unitCode, survey_comment=surveyWaterGroupCommentText) %>%
+  remove_rownames() %>% pluck()
 
 df2 <- list_flatten(df$surveyWaterGroupUseParameters) %>%
   set_names(paste0(year,"_",resource,"_",subpop,"_",units))
@@ -136,10 +140,11 @@ resource_comment <- data %>% select()
 
 
 all_surveys <- all_surveys %>%
-  #left_join(survey_comment) %>%
+  left_join(survey_comment, by = join_by(T1_Year, Resource, Subpopulation, Units)) %>%
   mutate(Subpopulation = paste0(Subpopulation," (",Units,")")) %>%
   #adding comments and a sort dummy variable to put Designated use estimates below stressors and OVERALL at bottom of dashboard
   mutate(commentText = if_else(is.na(commentText),"",commentText),
+         survey_comment = if_else(is.na(survey_comment ),"",survey_comment),
          USEsort = case_when(surveyUseCode==Indicator ~ "B",
                           TRUE ~ "A"),
          OVERALLsort = case_when(str_detect(Indicator, "OVERALL|Overall") ~ "Z",
@@ -156,10 +161,10 @@ all_surveys <- all_surveys %>%
          Resource = str_to_title(Resource)) %>%
   arrange(OVERALLsort, Subpopulation, surveyUseCode, USEsort) %>%
   arrange(factor(Condition, levels = c("Excellent", "Excellent Condition", "Very Good", "Pass", "Good", "Optimal", "Supporting Use", "Meeting", "Fully Supporting", "Fully supporting", "Meets", "Supports", "Support", "Not Detected", "At or Below Benchmark", "Low", "Attaining", "Good Condition", "Least Disturbed",
-                                       "Fair", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate",
+                                       "Fair", "Inconclusive", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate",
                                        "Poor", "Fail", "Not Supporting Use", "Violating", "Not Supporting", "Suboptimal", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed",
                                        "Missing", "Not Assessed","Insufficient Information")))
   
-
+remove_modal_spinner()
 
 all_surveys

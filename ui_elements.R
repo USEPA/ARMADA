@@ -26,24 +26,24 @@ oneIndicatorAllConditionCategories <- function() {
 controlPanel <- function() {
  
     tags$div(
-      style = "font-weight: bold; font-size: 12px;", 
+      style = "font-weight: bold; font-size: 14px;", 
       class="controls-container",
       uiOutput('state'),
       tags$head(tags$style(HTML("#resource_pop ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
       selectInput("resource_pop",
                   span("Select a Resource Type", 
-                       style = "font-weight: bold; font-size: 14px"),
+                       style = "font-weight: bold; font-size: 16px"),
                   choices = "") %>%
         #Resource Type helper
         helper(type = "inline",
                icon = "circle-question",
                title = "Resource Type",
-               content = c("The Resource Types shown are the surveys which the state/territory has reported. Explore water quality conditions across Resource Types, if available."),
+               content = c("The Resource Types shown are the aquatic resources which the state/territory has reported. Explore water quality conditions across Resource Types, if available."),
                size = "s", easyClose = TRUE, fade = TRUE),
       tags$head(tags$style(HTML("#primary_subpop ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
       selectInput("primary_subpop",
                   span("Select a Subpopulation", 
-                       style = "font-weight: bold; font-size: 14px"),
+                       style = "font-weight: bold; font-size: 16px"),
                   choices = "") %>%
         #Subpopulation helper
         helper(type = "inline",
@@ -56,7 +56,7 @@ controlPanel <- function() {
         tags$head(tags$style(HTML("#condition_category ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
         selectInput("condition_category",
                     span("Select a Condition Category", 
-                         style = "font-weight: bold; font-size: 14px"),
+                         style = "font-weight: bold; font-size: 16px"),
                     choices = "") %>%
           #Condition Category helper
           helper(type = "inline",
@@ -70,7 +70,7 @@ controlPanel <- function() {
         tags$head(tags$style(HTML("#indicator ~ .selectize-control.single .selectize-input {border-color: black; border-width: 3px; background-color: #eee; font-weight: bold;}"))),
         selectInput("indicator",
                     span("Select an Indicator", 
-                         style = "font-weight: bold; font-size: 14px"),
+                         style = "font-weight: bold; font-size: 16px"),
                     choices = "") %>%
           #Indicator helper
           helper(type = "inline",
@@ -83,7 +83,7 @@ controlPanel <- function() {
       tags$head(tags$style(HTML("#changediff ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
       selectInput("changediff",
                   span("Select Change Comparison", 
-                       style = "font-weight: bold; font-size: 14px"),
+                       style = "font-weight: bold; font-size: 16px"),
                   choices = "") %>%
         #Change helper
         helper(type = "inline",
@@ -94,7 +94,7 @@ controlPanel <- function() {
       tags$head(tags$style(HTML("#label ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
       selectInput("label",
                   span("Select Label Options", 
-                       style = "font-weight: bold; font-size: 14px"),
+                       style = "font-weight: bold; font-size: 16px"),
                   list('Point Estimate', 'Confidence Intervals', 'None')) %>%
         #Label helper
         helper(type = "inline",
@@ -109,7 +109,8 @@ controlPanel <- function() {
           format = "jpeg",
           filename = "All_Indicators_Dashboard.png",
           icon("camera"), 
-          "Screenshot of Dashboard"
+          span("Screenshot of Dashboard", 
+               style = "font-size: 16px")
         )
       ),
       conditionalPanel(
@@ -119,7 +120,8 @@ controlPanel <- function() {
         format = "jpeg",
         filename = "One_Indicators_Dashboard.png",
         icon("camera"), 
-        "Screenshot of Dashboard"
+        span("Screenshot of Dashboard", 
+             style = "font-size: 16px")
       )
      )
     )

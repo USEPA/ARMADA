@@ -29,7 +29,7 @@ function isRecordNA(view, d) {
 function getMarkerColor(condition) {
 	if (condition==="Pass"||condition==="Good"||condition==="Supporting Use"||condition==="Meeting"||condition==="Fully Supporting"||condition==="Meets"||condition==="Supports"||condition==="Support"||condition==="Excellent"||condition==="Not Detected"||condition==="At or Below Benchmark"||condition==="Low"||condition==="Attaining"||condition==="Very Good"||condition==="Good Condition"||condition==="Excellent Condition"||condition==="Least Disturbed"||condition==="Optimal")
 		return good_color;
-	else if (condition === "Fair"||condition === "Partially Supporting"||condition==="Satisfactory"||condition==="Moderate"||condition==="Potentially Not Supporting"||condition==="Fair Condition"||condition==="Intermediate")
+	else if (condition === "Fair"||condition === "Partially Supporting"||condition==="Satisfactory"||condition==="Moderate"||condition==="Potentially Not Supporting"||condition==="Fair Condition"||condition==="Intermediate"||condition==="Inconclusive")
 		return fair_color;
 	else if (condition === "Fail"||condition==="Poor"||condition==="Not Supporting Use"||condition==="Violating"||condition==="Not Supporting"||condition==="Violates"||condition==="Violates Natural"||condition==="Impaired"||condition==="Detected"||condition==="Above Benchmark"||condition==="High"||condition==="Poor Condition"||condition==="Most Disturbed"||condition==="Suboptimal")
 		return poor_color;

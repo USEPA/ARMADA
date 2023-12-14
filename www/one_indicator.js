@@ -42,7 +42,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
 
     let y_axis_cond_est = g => g
         .attr("transform", `translate(${margin.left},0)`)
-        .style("font-size", large_font_size)
+        .style("font-size", small_font_size)
       //  .style('font-weight','bold')
         .call(d3.axisLeft(y_cond_est).tickFormat( i => primary_data[i]? primary_data[i].Condition: primary_data[i].Condition).tickSize(0))
         .call(g => g.select(".domain").remove())
@@ -64,7 +64,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
 
     let x_axis_cond_est = g => g
         .attr("transform", `translate(0,${margin.top})`)
-        .style("font-size", medium_font_size)
+        .style("font-size", small_font_size)
         .style("color", light_text_color)
         .style('font-weight','bold')
         .call(d3.axisTop(x_cond_est)
@@ -146,7 +146,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
 
     let x_axis_change = g => g
         .attr("transform", `translate(0,${margin.top})`)
-        .style("font-size", small_font_size)
+        .style("font-size", esmall_font_size)
         .style("color", light_text_color)
         //.style("color", change_color)
         .style('font-weight','bold')
@@ -166,7 +166,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
 
     let x_axis_long_term_change = g => g
         .attr("transform", `translate(0,${margin.top})`)
-        .style("font-size", medium_font_size)
+        .style("font-size", small_font_size)
         .style("color", light_text_color)
         .style('font-weight','bold')
         .call(d3.axisTop(x_long_term_change)
@@ -259,7 +259,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
     svg.append("g")
         .attr("text-anchor", "end")
         .attr("font-family", "sans-serif")
-        .attr("font-size", medium_font_size)
+        .attr("font-size", ".7rem")
       //  .style('font-weight','bold')
         .selectAll("text")
         .data(primary_data)
@@ -331,7 +331,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("y", (d, i) => y_cond_est(i) + y_cond_est.bandwidth() / 2)
         .attr("dy", "0.35em")
         .attr("text-anchor", "middle")
-        .attr("font-size", medium_font_size)
+        .attr("font-size", small_font_size)
         .attr("fill", light_text_color)
         .text(d => d["T1T2_DIFF.P"] === null? "N/A" : "");
 
@@ -388,9 +388,10 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("y", (d, i) => y_cond_est(i) + y_cond_est.bandwidth() / 2)
         .attr("dy", "0.35em")
         .attr("text-anchor", "middle")
-        .attr("font-size", medium_font_size)
+        .attr("font-size", small_font_size)
         .attr("fill", light_text_color)
-        .text(d => d["T1T2_DIFF.P"] === null? `No 20${T1} Data Available` : "");
+        .text(d => d["T1T2_DIFF.P"] === null & T1 !== "T1"? `No 20${T1} Data Available` : 
+        d["T1T2_DIFF.P"] === null & T1 === "T1"? `Only ${year} Data Available` : "");
 
 
     /*********************************************

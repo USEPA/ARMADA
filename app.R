@@ -1,34 +1,18 @@
 source("global.R")
 source("ui_elements.R")
 addResourcePath(prefix = 'www', directoryPath = './www')
-ORGID <- c("Alaska"="AKDECWQ", "Arizona"="21ARIZ", "Colorado"="21COL001", "Connecticut"="CT_DEP01", "Florida"="21FL303D", "Iowa"="21IOWA", "Kansas"="21KAN001",
-           "Massachusetts"="MA_DEP", "Missouri"="MDNR", "New Hampshire"="11113300", "North Dakota"="21NDHDWQ",
-           "Oklahoma"="OKDEQ", "Pennsylvania"="21PA", "South Carolina"="21SC60WQ", "South Dakota"="SDDENR",
-           "Vermont"="1VTDECWQ", "Virginia"="21VASWCB", "Wisconsin"="WIDNR", "Wyoming"="WYDEQ")
-# ORGID<-list(States=
-#               c("Alabama"="21AWIC","Alaska"="AKDECWQ","Arizona"="21ARIZ","Arkansas"="ARDEQH2O","California"="CA_SWRCB",
-#                 "Colorado"="21COL001","Connecticut"="CT_DEP01","Delaware"="21DELAWQ","Georgia"="21GAEPD","Florida"="21FL303D",
-#                 "Hawaii"="21HI","Idaho"="IDEQ","Illinois"="IL_EPA","Indiana"="21IND","Iowa"="21IOWA","Kansas"="21KAN001",
-#                 "Kentucky"="21KY","Louisiana"="LADEQWPD","Maine"="MEDEP","Maryland"="MDE_EASP","Massachusetts"="MA_DEP",
-#                 "Michigan"="21MICH","Minnesota"="MNPCA","Mississippi"="21MSWQ","Missouri"="MDNR","Montana"="MDNR","Nebraska"="21NEB001",
-#                 "Nevada"="21NEV1","New Hampshire"="11113300","New Jersey"="21NJDEP1","New Mexico"="21NMEX","New York"="21NYDECA",
-#                 "North Carolina"="21NC01WQ","North Dakota"="21NDHDWQ","Oklahoma"="OKDEQ","Oregon"="OREGONDEQ","Pennsylvania"="21PA",
-#                 "Rhode Island"="RIDEM","South Carolina"="21SC60WQ","South Dakota"="SDDENR","Tennessee"="TDECWR","Texas"="TCEQMAIN",
-#                 "Utah"="UTAHDWQ","Vermont"="1VTDECWQ","Virginia"="21VASWCB","Washington"="WA_ECOLOGY","West Virginia"="WVDEP",
-#                 "Wisconsin"="WIDNR","Wyoming"="WYDEQ"),
-#             Territories=
-#               c("American Samoa"="21AS","District of Columbia"="DOEE","Guam"="21GUAM","Northern Mariana Islands"="21AQ",
-#                 "Puerto Rico"="PR_LAKES","US Virgin Islands"="USVIST"))
 
+#### UI----
 ui <-  tagList(
   # List the first level UI elements here
   tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "style.css")
+    tags$link(rel = "stylesheet", type = "text/css", href = "style.css"),
+    includeHTML("www/header.html"),
+    br()
   ),
   tags$body(
     gfonts::use_pkg_gfont("roboto"),
     id="custom",
-    suppressWarnings(
       navbarPage(
         title=span("Water Quality Dashboard", 
                    style = "font-weight: bold; font-size: 25px"),
@@ -36,35 +20,27 @@ ui <-  tagList(
         fluid=FALSE,
         id="tabs",
         column(12, align="center",
-               tags$head(tags$style(HTML("
-             #org_idcover ~ .selectize-control.single .selectize-input {background-color: #FFD133; border-width: 3px; font-weight: bold;}
-             #org_id ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}
-             .optgroup-header {color: black !important; font-weight: bold !important;}
-             .shiny-output-error-validation {font-weight: bold; font-size: x-large}
-             .sweet-alert .sa-icon.sa-custom {background-position: top !important;}
-             "))), 
              conditionalPanel(
-               condition = 'input.org_idcover == ""',
-               style = "display: none;",
+               condition = "input.org_idcover == ''",
                selectInput("org_idcover",
                            "Select a State/Territory to View Survey Data", 
                            width = "300px", 
                            c("Select State/Territory"="", ORGID)
-               )
-             ),
-             conditionalPanel(
-               condition = "input.org_idcover == ''",
+               ),
                column(12, align="left",
+                      
                       strong("Section 305(b) of the Federal Clean Water Act (CWA) requires each State to monitor, assess and report on the quality of its waters relative to
             designated uses established in accordance with state defined water quality standards. The data illustrated in the dashboard were collected using 
-            probability, or statistically based sampling, which allows states to extrapolate the results from the sample sites to the broader population of aquatic resources.
-            These dashboards allow users to view condition estimates for key indicators using benchmarks and condition categories set by each State."))
-             )
+            probability, or statistically based sampling, which allows states to extrapolate the results from the sample sites to the broader population of aquatic resources. 
+            Information presented are intended to assist states and the public to track progress in addressing water pollution, identify trends over time, recognize emerging problems 
+            and determine effectiveness of water management programs."),
+            )
+          )
         ),
         tabPanel(
           "Condition Summary View",
           value = "all_indicator",
-          allIndicatorsOneConditionCategory(),
+          allIndicatorsOneConditionCategory()
         ),
         tabPanel(
           "Indicator Summary View",
@@ -78,20 +54,26 @@ ui <-  tagList(
                       style = "font-style:italic;")
         ),
         conditionalPanel(
+          condition = "input.resource_pop == ''",
+          div(style="color: #888; font-weight: bold; font-size: x-large;",
+              textOutput("exists")), 
+          br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br()
+        ),
+        conditionalPanel(
           condition = "input.org_idcover !== ''",
           style = "display: none;",
-          controlPanel()
+          controlPanel(),
+          br(),br(),br(),br(),br(),br()
         )
-      )
-    )
-  )
-)  
+      )#navbar
+  )#$tagsBody
+  ,includeHTML("www/footer.html")
+)#tag$list  
 
 server <- function(input, output, session) {
-
   observe_helpers()
+  
   rv = reactiveValues()
-
   #trigger event on tab selection change
   observeEvent(input$tabs, {
     req(input$tabs %in% c("all_indicator","one_indicator"))
@@ -105,7 +87,7 @@ server <- function(input, output, session) {
                  imageUrl ='www/help_graphic.svg',
                  closeOnClickOutside = TRUE,
                  imageWidth = '900',
-                 imageHeight = '450',
+                 imageHeight = '550',
                  size = "l"
       )
       updateNavbarPage(session, "tabs",
@@ -122,7 +104,7 @@ server <- function(input, output, session) {
     statecover <- statecover()
     selectInput("org_id",
                 span("Select a State/Territory", 
-                     style = "font-weight: bold; font-size: 14px"),
+                     style = "font-weight: bold; font-size: 16px"),
                 choices=ORGID,
                 selected=statecover)
   })
@@ -148,7 +130,7 @@ server <- function(input, output, session) {
                       choices=Data() %>% filter(Resource==input$resource_pop & 
                                                 Subpopulation==input$primary_subpop) %>% select(Condition) %>% unique() %>%
                         arrange(factor(Condition, levels = c("Excellent", "Excellent Condition", "Very Good", "Optimal", "Pass", "Good", "Supporting Use", "Meeting", "Fully Supporting", "Fully supporting", "Meets", "Supports", "Support", "Not Detected", "At or Below Benchmark", "Low", "Attaining", "Good Condition", "Least Disturbed",
-                                                             "Fair", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate",
+                                                             "Fair", "Inconclusive", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate",
                                                              "Poor", "Fail", "Not Supporting Use", "Violating", "Suboptimal", "Not Supporting", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed",
                                                              "Missing", "Not Assessed", "Insufficient Information"))) %>% pull()
     )
@@ -168,8 +150,25 @@ server <- function(input, output, session) {
     )
   })
   #### ORG Data ----
+  output$exists <- renderText({  
+    req(input$org_idcover != "")
+    url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=",input$org_idcover)
+    res <- GET(url) 
+    json<- fromJSON(rawToChar(res$content))
+    data <- json$items
+    
+    if(length(data)==0){
+      exists <- 'Data Not Available for State/Territory.'
+    } else {
+      exists <- ""
+    }
+    exists 
+    })
+  
+  
   Data <- eventReactive(input$org_id, {
-    req(input$org_id != "")
+    req(input$org_id != "" )
+    
     source("data_prep_trials.R", local = TRUE)$value
   })
   
@@ -248,7 +247,7 @@ server <- function(input, output, session) {
 
   
   #### All Indicators Dashboard ----
-observeEvent(input$changediff,{
+observeEvent(allindicator_data(),{
     # Builds the dashboard located in the All Indicators, One Condition Category tab
     output$allindicators <- r2d3::renderD3({
       req(input$org_id, input$resource_pop, input$primary_subpop, input$condition_category, input$changediff, !is.na(Dashboarddata()), ChangeYears())
@@ -299,6 +298,7 @@ observeEvent(input$changediff,{
       dashboard_height <- getDashboardHeight(all_indicators_data, input$primary_subpop, NA, "all")
       year <- all_indicators_data %>% select(T1_Year) %>% unique() %>% pull()
       units <- all_indicators_data %>% select(Units) %>% unique() %>% pull()
+      survey_comment <- all_indicators_data %>% select(survey_comment) %>% unique() %>% pull()
       if(input$changediff != "Only One Year Available"){
         T1 <- str_sub(names(ChangeYears()[ChangeYears()==input$changediff]), start= 15, end=16)
         T2 <- str_sub(names(ChangeYears()[ChangeYears()==input$changediff]), start= 23, end=24)
@@ -308,14 +308,14 @@ observeEvent(input$changediff,{
       }
       
       # options passed to javascript
-      options <- list(units=units, T1=T1, T2=T2, resource = input$resource_pop, primary_subpop = input$primary_subpop, comp_subpop = input$comp_subpop, condition = input$condition_category, label_format=input$label, height=dashboard_height, margin_top=margin_top, margin_bottom=margin_bottom, state=names(ORGID[ORGID==input$org_id]), year=year, change=names(ChangeYears()[ChangeYears()==input$changediff]))
+      options <- list(survey_comment=survey_comment, units=units, T1=T1, T2=T2, resource = input$resource_pop, primary_subpop = input$primary_subpop, comp_subpop = input$comp_subpop, condition = input$condition_category, label_format=input$label, height=dashboard_height, margin_top=margin_top, margin_bottom=margin_bottom, state=names(ORGID_choices[ORGID_choices==input$org_id]), year=year, change=names(ChangeYears()[ChangeYears()==input$changediff]))
       
       # The dashboard is written in d3.js
       # The source code is located in the all_indicators.js file (with additional dependencies)
       r2d3::r2d3(script="www/all_indicators.js", css="www/svg.css", dependencies = c("www/d3-textwrap.min.js", "www/tooltip.js", "www/utils.js", "www/global_var.js"), data=all_indicators_data, d3_version = "6", options = options)
     })
 })
-  observeEvent(input$changediff,{
+  observeEvent(oneindicator_data(),{
   #### One Indicator Dashboard ----
   # Builds the dashboard located in the One Indicator, All Condition Categories tab
   output$oneindicator <- r2d3::renderD3({
@@ -362,7 +362,7 @@ observeEvent(input$changediff,{
     dashboard_height <- getDashboardHeight(one_indicator_data, input$primary_subpop, input$indicator, "one")
     year <- one_indicator_data %>% select(T1_Year) %>% unique() %>% pull()
     units <- one_indicator_data %>% select(Units) %>% unique() %>% pull()
-    
+    survey_comment <- one_indicator_data %>% select(survey_comment) %>% unique() %>% pull()
     if(input$changediff != "Only One Year Available"){
       T1 <- str_sub(names(ChangeYears()[ChangeYears()==input$changediff]), start= 15, end=16)
       T2 <- str_sub(names(ChangeYears()[ChangeYears()==input$changediff]), start= 23, end=24)
@@ -371,7 +371,7 @@ observeEvent(input$changediff,{
       T2 <- "T2"
     }
     # options passed to javascript
-    options <- list(units=units,T1=T1, T2=T2, resource = input$resource_pop, primary_subpop = input$primary_subpop, comp_subpop = input$comp_subpop, indicator = input$indicator, label_format=input$label, height=dashboard_height, margin_top=margin_top, margin_bottom=margin_bottom, state=names(ORGID[ORGID==input$org_id]), year=year, change=names(ChangeYears()[ChangeYears()==input$changediff]))
+    options <- list(survey_comment=survey_comment, units=units,T1=T1, T2=T2, resource = input$resource_pop, primary_subpop = input$primary_subpop, comp_subpop = input$comp_subpop, indicator = input$indicator, label_format=input$label, height=dashboard_height, margin_top=margin_top, margin_bottom=margin_bottom, state=names(ORGID_choices[ORGID_choices==input$org_id]), year=year, change=names(ChangeYears()[ChangeYears()==input$changediff]))
     
     # The dashboard is written in d3.js
     # The source code is located in the one_indicator.js file (with additional dependencies)
