@@ -8,14 +8,14 @@ ui <-  tagList(
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "style.css"),
     includeHTML("www/header.html"),
-    br()
+   # br()
   ),
   tags$body(
     gfonts::use_pkg_gfont("roboto"),
     id="custom",
       navbarPage(
         title=span("Water Quality Dashboard", 
-                   style = "font-weight: bold; font-size: 25px"),
+                   style = "font-weight: bold; font-size: 40px;"),
         collapsible=TRUE,
         fluid=FALSE,
         id="tabs",
@@ -28,7 +28,6 @@ ui <-  tagList(
                            c("Select State/Territory"="", ORGID)
                ),
                column(12, align="left",
-                      
                       strong("Section 305(b) of the Federal Clean Water Act (CWA) requires each State to monitor, assess and report on the quality of its waters relative to
             designated uses established in accordance with state defined water quality standards. The data illustrated in the dashboard were collected using 
             probability, or statistically based sampling, which allows states to extrapolate the results from the sample sites to the broader population of aquatic resources. 
@@ -43,7 +42,7 @@ ui <-  tagList(
           allIndicatorsOneConditionCategory()
         ),
         tabPanel(
-          "Indicator Summary View",
+          "Indicator Summary View", 
           value = "one_indicator",
           oneIndicatorAllConditionCategories()
         ),
