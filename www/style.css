@@ -17,8 +17,21 @@
     position: relative;
 }
 
+.navbar .navbar-nav {font-weight: bold; font-size: 20px; padding-top: 15px; width: 100%; display: flex;
+  justify-content: center;
+  align-items: center;}
+.navbar .navbar-header {font-family: "Roboto Slab", serif; width: 100%; display: flex;
+  justify-content: center;
+  align-items: center;}
+
 #custom .navbar-default {
-    background-color: #005DA4;
+    height: 7em;
+    z-index: 15;
+    background-size: cover;
+    background-position: center center;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.3) 25%,
+                       rgba(0, 0, 0, 0.3) 50%), url("Maine_MtKatahdin.jpg");
+    background-color: #000000;
 }
 
 #custom .navbar-default .navbar-nav>li>a {
@@ -26,7 +39,7 @@
 }
 
 #custom .navbar-default .navbar-nav>.active>a {
-    background-color: rgb(0, 150, 214);
+    background-color: rgb(0, 150, 214,  0.5);
 }
 
 #custom .navbar-brand {
@@ -64,7 +77,6 @@
 #custom .controls-container {
     width: 240px;
     padding-left: 20px;
-
     position: absolute;
     right: 0px;
     top: 0px;
@@ -91,7 +103,6 @@
     border: 1px solid #333;
     border-radius: 4px;
     pointer-events: none;
-
     opacity: 1;
 
 }
