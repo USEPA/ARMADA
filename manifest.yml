@@ -1,0 +1,9 @@
+applications:
+- name: partner-dashboard
+  memory: 500M
+  routes:
+    - route: partner-dashboard-dev.app.cloud.gov
+  disk_quota: 500M
+  buildpacks:
+    - r_buildpack
+  command: R -f shiny.R
