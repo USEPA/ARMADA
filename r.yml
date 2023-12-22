@@ -15,11 +15,9 @@ packages:
     - name: shinybusy
     - name: shinyhelper
     - name: shinyalert
-  #  - name: remotes
+    - name: remotes
     
-  #  if (!catpure %in% installed.packages()) {
-   # remotes::install_github("dreamRs/capture")
-#}
+
 
 
 
