@@ -1,3 +1,7 @@
+let getIndicatorTooltip = (d) => {
+    return `${d['commentText']}`;
+}
+
 let getCondEstTooltip = (d) => {
     return `<strong>${d['Indicator']} | ${d['Condition']} | ${d['Subpopulation']}</strong><br>
             ${tip_format(d['T1.P.Estimate'])}% 
@@ -115,6 +119,12 @@ let tooltip = (selectionGroup, tooltipDiv, view) => {
             .html(function() {
                 if (view === "cond_est") {
                     return getCondEstTooltip(d);
+                } else if (view === "indicator") {
+                  if(d['commentText'] !== ""){
+                    return getIndicatorTooltip(d);
+                      } else {
+                        return hideTooltip();
+                      }
                 } else if (view === "cond_est comp") {
                     return getCondEstTooltip(d);
                 } else if (view === "change") {

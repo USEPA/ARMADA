@@ -16,7 +16,7 @@
 # 
 # 
 #url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=11113300")
-#url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=21SC60WQ")
+url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=21SC60WQ")
 #url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=21COL001")
 # ATTAINS API ----
 # Connect to ATTAINS database and pull survey data by Organization ID 
@@ -47,7 +47,9 @@ year <- pluck(df$Year)
 units <- pluck(df$unitCode)
 survey_comment <- df %>% mutate(Year=as.numeric(Year)) %>% filter(Year==max(Year)) %>%
   select(T1_Year=Year, Resource=waterTypeGroupCode, Subpopulation=subPopulationCode, Units=unitCode, survey_comment=surveyWaterGroupCommentText) %>%
-  remove_rownames() %>% pluck()
+  #remove_rownames() %>% 
+  pluck()
+row.names(survey_comment) <- NULL
 
 df2 <- list_flatten(df$surveyWaterGroupUseParameters) %>%
   set_names(paste0(year,"_",resource,"_",subpop,"_",units))
@@ -62,14 +64,14 @@ df3 <- as.data.frame(do.call(rbind, lapply(df2 , as.data.frame))) %>%
          .after=marginOfError) %>%
   separate(GROUP,into=c("Year", "Resource", "Subpopulation", "Units"), 
            sep="_") %>%
-  remove_rownames() %>% 
+  #remove_rownames() %>% 
   mutate(Year=as.numeric(Year)) %>%
   arrange(desc(Year), Resource, stressor) %>%
   select(-statistic, -marginOfError) %>%
   rename(Indicator=stressor,
          Condition=surveyCategoryCode)
 
-
+row.names(df3 ) <- NULL
 # Current Surveys----
 current_surveys <- df3 %>%
   group_by(Resource, Subpopulation, Units) %>%
@@ -147,7 +149,7 @@ all_surveys <- all_surveys %>%
          survey_comment = if_else(is.na(survey_comment ),"",survey_comment),
          USEsort = case_when(surveyUseCode==Indicator ~ "B",
                           TRUE ~ "A"),
-         OVERALLsort = case_when(str_detect(Indicator, "OVERALL|Overall") ~ "Z",
+         OVERALLsort = case_when(str_detect(Indicator, "OVERALL|Overall|overall") ~ "Z",
                              TRUE ~ "A")) %>%
   #This will remove columns if past surveys were different than current surveys
   #select_if(~any(!is.na(.))) %>%

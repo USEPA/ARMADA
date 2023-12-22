@@ -7,6 +7,11 @@ ui <-  tagList(
   # List the first level UI elements here
   tags$head(
     tags$link(rel = "stylesheet", type = "text/css", href = "style.css"),
+    tags$html(class = "no-js", lang = "en"),
+    HTML("<div id='eq-disclaimer-banner' class='padding-1 text-center text-white bg-secondary-dark'><strong>EPA development environment:</strong> The
+      content on this page is not production ready. This site is being used
+      for <strong>development</strong> and/or <strong>testing</strong> purposes
+      only.</div>"),
     includeHTML("www/header.html"),
    # br()
   ),
@@ -23,16 +28,16 @@ ui <-  tagList(
              conditionalPanel(
                condition = "input.org_idcover == ''",
                selectInput("org_idcover",
-                           "Select a State/Territory to View Survey Data", 
+                           "Select a State/Territory/Tribe to View Survey Data", 
                            width = "300px", 
-                           c("Select State/Territory"="", ORGID)
-               ),
+                           c("Select State/Territory/Tribe"="", ORGID)
+               ), 
                column(12, align="left",
-                      strong("Section 305(b) of the Federal Clean Water Act (CWA) requires each State to monitor, assess and report on the quality of its waters relative to
+                      "Section 305(b) of the Federal Clean Water Act (CWA) requires each State to monitor, assess and report on the quality of its waters relative to
             designated uses established in accordance with state defined water quality standards. The data illustrated in the dashboard were collected using 
             probability, or statistically based sampling, which allows states to extrapolate the results from the sample sites to the broader population of aquatic resources. 
             Information presented are intended to assist states and the public to track progress in addressing water pollution, identify trends over time, recognize emerging problems 
-            and determine effectiveness of water management programs."),
+            and determine effectiveness of water management programs."
             )
           )
         ),
@@ -70,6 +75,14 @@ ui <-  tagList(
 )#tag$list  
 
 server <- function(input, output, session) {
+  # Example: https://https://owshiny.epa.gov/Water-Dashboard/?org_idcover=WIDNR
+  # observe({
+  #   query <- parseQueryString(session$clientData$url_search)
+  #   if(!is.null(query[['org_idcover']])) {
+  #     updateSelectInput(session, "org_idcover", selected = query[['org_idcover']])
+  #   }
+  # })
+  
   observe_helpers()
   
   rv = reactiveValues()
@@ -102,7 +115,7 @@ server <- function(input, output, session) {
     req(statecover())
     statecover <- statecover()
     selectInput("org_id",
-                span("Select a State/Territory", 
+                span("Select a State/Territory/Tribe", 
                      style = "font-weight: bold; font-size: 16px"),
                 choices=ORGID,
                 selected=statecover)
@@ -120,7 +133,7 @@ server <- function(input, output, session) {
     updateSelectInput(session,
                       "primary_subpop",
                       choices=Data() %>% filter(Resource==input$resource_pop) %>% select(Subpopulation) %>% unique() %>% 
-                        arrange(factor(Subpopulation, levels = c("Statewide (Miles)", "Statewide (Acres"))) %>% pull()
+                        arrange(factor(Subpopulation, levels = c("Statewide (Miles)", "Statewide (Acres)"))) %>% pull()
     )
   })
   observeEvent(c(input$primary_subpop, input$resource_pop, input$org_id), {
@@ -157,7 +170,7 @@ server <- function(input, output, session) {
     data <- json$items
     
     if(length(data)==0){
-      exists <- 'Data Not Available for State/Territory.'
+      exists <- 'Data Not Available for State/Territory/Tribe.'
     } else {
       exists <- ""
     }

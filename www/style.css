@@ -1,8 +1,13 @@
 #org_idcover ~ .selectize-control.single .selectize-input {background-color: #FFD133; border-width: 3px; font-weight: bold;}
+
 #org_id ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}
+
 .optgroup-header {color: #737373 !important; font-weight: bold !important; font-size: 18px !important;}
+
 .shiny-output-error-validation {font-weight: bold; font-size: x-large}
+
 .sweet-alert .sa-icon.sa-custom {background-position: top !important;}
+
 .btn-default {
     color: #fff;
     background-color: #5cb85c;
@@ -17,20 +22,30 @@
     position: relative;
 }
 
-.navbar .navbar-nav {font-weight: bold; font-size: 20px; padding-top: 15px; width: 100%; display: flex;
-  justify-content: center;
-  align-items: center;}
-.navbar .navbar-header {font-family: "Roboto Slab", serif; width: 100%; display: flex;
-  justify-content: center;
-  align-items: center;}
+.navbar .navbar-nav {font-weight: bold; 
+	font-size: 20px; 
+	padding-top: 15px; 
+	width: 100%; 
+	display: flex;
+  	justify-content: center;
+  	align-items: center;}
+
+.navbar .navbar-header {
+	font-family: "Roboto Slab", serif; 
+	width: 100%; display: flex;
+  	justify-content: center;
+  	align-items: center;}
 
 #custom .navbar-default {
     height: 7em;
     z-index: 15;
     background-size: cover;
     background-position: center center;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.3) 25%,
-                       rgba(0, 0, 0, 0.3) 50%), url("Maine_MtKatahdin.jpg");
+    background-image: linear-gradient(
+			rgba(0, 0, 0, 0.3) 25%,
+			rgba(0, 0, 0, 0.1) 50%,
+			rgba(0, 0, 0, 0.5) 75%), 
+		url("Maine_MtKatahdin.jpg");
     background-color: #000000;
 }
 
@@ -72,7 +87,6 @@
     width: 100%;
     position: relative;
 }
-
 
 #custom .controls-container {
     width: 240px;

@@ -18,7 +18,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
     let primary_data = data.filter(d => d["Subpopulation"] === options.primary_subpop);
     let primary_categories = primary_data.map(d => d["Condition"]);
 
-    let comp_data = data.filter(d => d["Subpopulation"] === options.comp_subpop && primary_categories.includes(d["Condition"]));
+  //  let comp_data = data.filter(d => d["Subpopulation"] === options.comp_subpop && primary_categories.includes(d["Condition"]));
 
     /*********************************************
      * Condition Estimates Axes and Ranges
@@ -216,19 +216,19 @@ r2d3.onRender(function(data, svg, width, height, options) {
 
     cond_est_g = svg.append("g");
 
-    cond_est_g.selectAll(".cond-est-ci-bar-comp-subpop")
-        .data(comp_data)
-        .enter()
-        .append("line")
-        .attr("x1", (d) => x_cond_est(+d["T1.LCB"]))
-        .attr("x2", (d) => x_cond_est(+d["T1.UCB"]))
-        .attr("y1", (d, i) => y_cond_est(i) + y_cond_est.bandwidth()/2.0)
-        .attr("y2", (d, i) => y_cond_est(i) + y_cond_est.bandwidth()/2.0)
-        .attr("stroke", "gray")
-        .attr("stroke-opacity", default_stroke_opacity)
-        .style("opacity", default_stroke_opacity)
-        .attr("stroke-width", 25)
-        .call(tooltip, tooltipDiv, "cond_est comp");
+   // cond_est_g.selectAll(".cond-est-ci-bar-comp-subpop")
+   //     .data(comp_data)
+   //     .enter()
+    //    .append("line")
+    //    .attr("x1", (d) => x_cond_est(+d["T1.LCB"]))
+    //    .attr("x2", (d) => x_cond_est(+d["T1.UCB"]))
+     //   .attr("y1", (d, i) => y_cond_est(i) + y_cond_est.bandwidth()/2.0)
+     //   .attr("y2", (d, i) => y_cond_est(i) + y_cond_est.bandwidth()/2.0)
+      //  .attr("stroke", "gray")
+      //  .attr("stroke-opacity", default_stroke_opacity)
+     //   .style("opacity", default_stroke_opacity)
+     //   .attr("stroke-width", 25)
+     //   .call(tooltip, tooltipDiv, "cond_est comp");
 
     cond_est_g
         .selectAll("rect")
@@ -355,18 +355,18 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("transform", (d, i) => `translate(${x_long_term_change(+d["T1T2_DIFF.P"])}, ${y_cond_est(i) + (y_cond_est.bandwidth()/2.0)})`)
         .attr("fill-opacity", d => d["T1T2_DIFF.P"] === null? 0.0: 1.0);
 
-    long_term_change_g.selectAll(".long-term-change-ci-bar")
-        .data(primary_data)
-        .enter()
-        .append("line")
-        .attr("x1", (d) => x_long_term_change(+d["LCB95.P.Diff.T2vT3.Condition"]))
-        .attr("x2", (d) => x_long_term_change(+d["UCB95.P.Diff.T2vT3.Condition"]))
-        .attr("y1", (d, i) => y_cond_est(i) + (y_cond_est.bandwidth() / 2.0))
-        .attr("y2", (d, i) => y_cond_est(i) + (y_cond_est.bandwidth() / 2.0))
+    //long_term_change_g.selectAll(".long-term-change-ci-bar")
+        //.data(primary_data)
+        //.enter()
+        //.append("line")
+        //.attr("x1", (d) => x_long_term_change(+d["LCB95.P.Diff.T2vT3.Condition"]))
+        //.attr("x2", (d) => x_long_term_change(+d["UCB95.P.Diff.T2vT3.Condition"]))
+        //.attr("y1", (d, i) => y_cond_est(i) + (y_cond_est.bandwidth() / 2.0))
+        //.attr("y2", (d, i) => y_cond_est(i) + (y_cond_est.bandwidth() / 2.0))
         //.style("stroke", (d) => d["Sig95_T1T2"] === "Y"? getMarkerSigColor(d["Condition"]): getMarkerColor(d["Condition"]))
         //.attr("fill", change_color)
-        .attr("fill", d => getMarkerColor(d["Condition"]))
-        .attr("stroke-width", ci_bar_height);
+        //.attr("fill", d => getMarkerColor(d["Condition"]))
+        //.attr("stroke-width", ci_bar_height);
 
     long_term_change_g.selectAll(".long-term-change-tooltip-bar")
         .data(primary_data)

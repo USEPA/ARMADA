@@ -38,7 +38,7 @@ controlPanel <- function() {
         helper(type = "inline",
                icon = "circle-question",
                title = "Resource Type",
-               content = c("The Resource Types shown are the aquatic resources which the state/territory has reported. Explore water quality conditions across Resource Types, if available."),
+               content = c("The Resource Types shown are the aquatic resources which the State/Territory/Tribe has reported. Explore water quality conditions across Resource Types, if available."),
                size = "s", easyClose = TRUE, fade = TRUE),
       tags$head(tags$style(HTML("#primary_subpop ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
       selectInput("primary_subpop",
@@ -49,7 +49,7 @@ controlPanel <- function() {
         helper(type = "inline",
                icon = "circle-question",
                title = "Subpopulation",
-               content = c("Ocassionally, State/Territories will sample smaller scale areas rather than statewide. Explore water quality conditions across Resource Types, if available."),
+               content = c("Ocassionally, State/Territories/Tribes will sample smaller scale areas rather than statewide. Explore water quality conditions across Subpopulations, if available."),
                size = "s", easyClose = TRUE, fade = TRUE),
       conditionalPanel(
         condition = "input.tabs == 'all_indicator'",
