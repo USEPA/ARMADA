@@ -1,3 +1,7 @@
+if(!"capture" %in% installed.packages()) {
+    remotes::install_github("dreamRs/capture")
+}
+
 library(shiny)
 library(tidyverse)
 library(gfonts)
