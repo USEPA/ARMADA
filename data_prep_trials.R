@@ -16,7 +16,7 @@
 # 
 # 
 #url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=11113300")
-url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=21SC60WQ")
+#url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=21SC60WQ")
 #url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=21COL001")
 # ATTAINS API ----
 # Connect to ATTAINS database and pull survey data by Organization ID 
