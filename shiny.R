@@ -35,6 +35,10 @@ if(dir.exists(lib_dir))
 
 print(list.files(lib_dir))
 
+if(!"r2d3" %in% installed.packages()) {
+  devtools::install_github("rstudio/r2d3")
+}
+
 library(shiny)
 
 runApp(host="0.0.0.0", port=strtoi(Sys.getenv("PORT")))
