@@ -11,6 +11,7 @@ The Partner Dashboard, aka Water Quality Dashboard, exports State/Territory/Trib
 Each State/Territory/Tribe has a designated ATTAINS person with permission to transfer data to ATTAINS. If you cannot access the survey for an Organization, or if you need to be able to edit and submit survey results data, but currently only have Read Only rights, please contact your regional Data Management Coordinator (DMC) to have your permissions updated. Data Entry permissions will allow you to add and edit survey results data. Administrator permissions will allow you to add and edit survey results data, as well as finalize and publish the results. Survey
 Administrators are limited to State/Territory/Tribal users. EPA users are allowed Survey Administrator permissions only in limited circumstances. Users can follow the document [How to Enter State Scale Statistical (Probability) Survey Results in ATTAINS](https://www.epa.gov/sites/default/files/2019-05/documents/attains_how_to_enter_state_survey_results_2019-05-17.pdf) for a guide on entering survey data.
 
+To learn how Survey data in ATTAINS is linked to the dashboard, visit: [How ATTAINS data is linked Partner Dashboard](https://github.com/USEPA/Partner-Dashboard/ATTAINS_Dashboard_setup.pdf).
 
 
 ## Disclaimer
