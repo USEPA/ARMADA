@@ -1,32 +1,31 @@
-# packages <- c("shiny","dplyr","purrr","stringr","tibble","tidyr","gfonts","httr","jsonlite","r2d3","shinybusy","shinyhelper","shinyalert")
-# 
-# installed_packages <- packages %in% rownames(installed.packages())
-# if(any(installed_packages == FALSE)) {
-#   install.packages(packages[!installed_packages])
-# }
-# 
-if(!"capture" %in% installed.packages()) {
-    remotes::install_github("dreamRs/capture")
-}
-# 
-# # Packages loading
-# lapply(packages, library, character.only = TRUE)
-# library(capture)
+packages <- c("shiny","dplyr","purrr","stringr","tidyr","gfonts","httr","jsonlite","r2d3","shinybusy","shinyhelper","shinyalert")
 
-library(shiny)
-library(dplyr)
-library(purrr)
-library(stringr)
-#library(tibble)
-library(tidyr)
-library(gfonts)
-library(httr)
-library(jsonlite)
-library(r2d3)
-library(capture)
-library(shinyalert)
-library(shinyhelper)
-library(shinybusy)
+installed_packages <- packages %in% rownames(installed.packages())
+if(any(installed_packages == FALSE)) {
+  install.packages(packages[!installed_packages])
+}
+
+ if(!"capture" %in% installed.packages()) {
+     remotes::install_github("dreamRs/capture")
+ }
+ 
+ # Packages loading
+ lapply(packages, library, character.only = TRUE)
+ library(capture)
+
+# library(shiny)
+# library(dplyr)
+# library(purrr)
+# library(stringr)
+# library(tidyr)
+# library(gfonts)
+# library(httr)
+# library(jsonlite)
+# library(r2d3)
+# library(capture)
+# library(shinyalert)
+# library(shinyhelper)
+# library(shinybusy)
 
 options(warn=-1)
 

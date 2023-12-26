@@ -84,8 +84,8 @@ function createDashAxisBar(svg, width, x_cond_est, x_long_term_change, cond_est_
 
     let dash_axis_bar_x_offset =3.5;
    	dash_axis_bar.append("text")
-   		.attr("text-anchor", "end")
-   		.attr("x", margin.left - dash_axis_bar_x_offset)
+   		.attr("text-anchor", "middle")
+   		.attr("x", margin.left * 0.75)
    		.attr("y", dash_axis_text_y)
    		.text(cond_est_header);
 

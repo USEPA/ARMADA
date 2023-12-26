@@ -13,7 +13,6 @@ ui <-  tagList(
       for <strong>development</strong> and/or <strong>testing</strong> purposes
       only.</div>"),
     includeHTML("www/header.html"),
-   # br()
   ),
   tags$body(
     gfonts::use_pkg_gfont("roboto"),
@@ -51,12 +50,6 @@ ui <-  tagList(
           value = "one_indicator",
           oneIndicatorAllConditionCategories()
         ),
-        tabPanel(value="help",
-                 icon = icon('circle-info'),
-                 verify_fa = FALSE,
-                 span("Help",
-                      style = "font-style:italic;")
-        ),
         conditionalPanel(
           condition = "input.resource_pop == ''",
           div(style="color: #888; font-weight: bold; font-size: x-large;",
@@ -82,6 +75,22 @@ server <- function(input, output, session) {
   #     updateSelectInput(session, "org_idcover", selected = query[['org_idcover']])
   #   }
   # })
+  
+  observe({
+    req(input$org_idcover != "")
+    insertTab(inputId = "tabs",
+                         tabPanel(value="help",
+                                  icon = icon('circle-info'),
+                                  verify_fa = FALSE,
+                                  span("Help",
+                                       style = "font-style:italic;")
+                                  )
+    )
+  })
+  
+  
+  
+  
   
   observe_helpers()
   

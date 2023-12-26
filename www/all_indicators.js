@@ -11,12 +11,11 @@ r2d3.onRender(function(data, svg, width, height, options) {
 	marker_color = getMarkerColor(options.condition);
 	marker_sig_color = getMarkerSigColor(options.condition);
 	
+	  let dash_label = "Indicator"
 	  let resource = options.resource
 	  let units = options.units
 	  let T1 = options.T1
 	  let T2 = options.T2
-	  let indicator_label = "Indicator"
-	  
 	  let change = options.change
 	  let state = options.state
 	  let year = options.year
@@ -224,7 +223,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
      * Create Dashboard Axis Bar and Footer
      *********************************************/
 
-    createDashAxisBar(svg, dashboard_width, x_cond_est, x_long_term_change, indicator_label, change, units);
+    createDashAxisBar(svg, dashboard_width, x_cond_est, x_long_term_change, dash_label, change, units);
     createTitle("all", options);
     createFooter(svg, options);
 //    createWatermark(svg);

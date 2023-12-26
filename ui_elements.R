@@ -62,7 +62,7 @@ controlPanel <- function() {
           helper(type = "inline",
                  icon = "circle-question",
                  title = "Condition Category",
-                 content = c("Condition Categories are set by states to determine condition based on certain thresholds or benchmarks. Use the input to explore the results for different Condition Categories."),
+                 content = c("Condition Categories are set by States/Territories/Tribes to determine condition based on certain thresholds or benchmarks. Use the input to explore the results for different Condition Categories."),
                  size = "s", easyClose = TRUE, fade = TRUE)
       ),
       conditionalPanel(
@@ -89,7 +89,7 @@ controlPanel <- function() {
         helper(type = "inline",
                icon = "circle-question",
                title = "Change Comparison",
-               content = c("Often States/Territories have collected data over numerous years. Use the input to compare the results across available years."),
+               content = c("Often States/Territories/Tribes have collected data over numerous years. Use the input to compare the results across available years."),
                size = "s", easyClose = TRUE, fade = TRUE),
       tags$head(tags$style(HTML("#label ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
       selectInput("label",

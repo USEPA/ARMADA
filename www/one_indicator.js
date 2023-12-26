@@ -7,7 +7,8 @@ d3.select(".active .chart-container")
 const tooltipDiv = d3.select(".active .tooltip");
 
 r2d3.onRender(function(data, svg, width, height, options) {
-  
+    
+    let dash_label = "Condition"
     let resource = options.resource
     let units = options.units
     let T1 = options.T1
@@ -199,7 +200,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
      * Create Dashboard Axis Bar and Footer
      *********************************************/
 
-    createDashAxisBar(svg, dashboard_width, x_cond_est, x_long_term_change, "Condition", change, units);
+    createDashAxisBar(svg, dashboard_width, x_cond_est, x_long_term_change, dash_label, change, units);
     createTitle("one", options);
     createFooter(svg, options);
  //   createWatermark(svg);

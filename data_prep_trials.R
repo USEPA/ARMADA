@@ -1,3 +1,13 @@
+myCap.2 <- function(x) {
+  out <- sapply(x, function(y) {
+    idx <- str_locate(y, "\\([^()]+\\)")
+    if (!all(is.na(idx[1,]))) {
+      str_sub(y, idx[,1], nchar(y)) <- toupper(str_sub(y, idx[,1], nchar(y))) 
+    }
+    return(y)
+  })
+  out
+}
 # ORGID<-list(States=
 # c("Alabama"="21AWIC","Alaska"="AKDECWQ","Arizona"="21ARIZ","Arkansas"="ARDEQH2O","California"="CA_SWRCB",
 # "Colorado"="21COL001","Connecticut"="CT_DEP01","Delaware"="21DELAWQ","Georgia"="21GAEPD","Florida"="21FL303D",
@@ -138,7 +148,7 @@ for(i in 2:length(grep(x = colnames(all_surveys), pattern = ".P.Estimate"))) {
   }
 }
 
-resource_comment <- data %>% select()
+
 
 
 all_surveys <- all_surveys %>%
@@ -156,11 +166,12 @@ all_surveys <- all_surveys %>%
   mutate_at(vars(contains("UCB")), ~ifelse((.>100), 100, .)) %>%
   mutate_at(vars(contains("LCB")), ~ifelse((.<0), 0, .)) %>%
   #Cleans and orders indicators, conditions and resources
-  mutate(Indicator = case_when(str_detect(Indicator, "[)]") ~ Indicator,
-                               Indicator %in% c("pH", "PH") ~ "pH",
+  mutate(Indicator = case_when(Indicator %in% c("pH", "PH") ~ "pH",
                                TRUE ~ str_to_title(Indicator)),
          Condition = str_to_title(Condition),
          Resource = str_to_title(Resource)) %>%
+  mutate(Indicator = case_when(str_detect(Indicator, "[)]") & USEsort=="A" ~ myCap.2(Indicator),
+                               TRUE ~ Indicator)) %>%
   arrange(OVERALLsort, Subpopulation, surveyUseCode, USEsort) %>%
   arrange(factor(Condition, levels = c("Excellent", "Excellent Condition", "Very Good", "Pass", "Good", "Optimal", "Supporting Use", "Meeting", "Fully Supporting", "Fully supporting", "Meets", "Supports", "Support", "Not Detected", "At or Below Benchmark", "Low", "Attaining", "Good Condition", "Least Disturbed",
                                        "Fair", "Inconclusive", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate",
@@ -170,3 +181,4 @@ all_surveys <- all_surveys %>%
 remove_modal_spinner()
 
 all_surveys
+
