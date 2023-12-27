@@ -1,6 +1,6 @@
 # Partner Dashboard
 
-## How to Launch the Tool
+## How to Launch the Dashboard
 * To launch the tool locally, click the green 'Code' button and download the zip file which contains the code repository. Open the <b>app.R</b> file in RStudio for local app deployment. RStudio will recognize the Shiny script and provide a Run App button at the top of the editor pane (look for the green play triangle).
 
 ## Overview
