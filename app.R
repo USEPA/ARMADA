@@ -25,8 +25,8 @@ ui <-  tagList(
         id="tabs",
         column(12, align="center",
              conditionalPanel(
-               condition = "input.org_idcover == ''",
-               selectInput("org_idcover",
+               condition = "input.org_idcode == ''",
+               selectInput("org_idcode",
                            "Select a State/Territory/Tribe to View Survey Data", 
                            width = "300px", 
                            c("Select State/Territory/Tribe"="", ORGID)
@@ -57,7 +57,7 @@ ui <-  tagList(
           br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br(),br()
         ),
         conditionalPanel(
-          condition = "input.org_idcover !== ''",
+          condition = "input.org_idcode !== ''",
           style = "display: none;",
           controlPanel(),
           br(),br(),br(),br(),br(),br()
@@ -71,16 +71,16 @@ server <- function(input, output, session) {
   
   observe_helpers()
   
-  # Example: https://rstudio-connect.dmap-stage.aws.epa.gov/content/74a7f241-6aa1-49e7-99c2-3a5278363e29/?org_idcover=WIDNR
+  # Example: https://rstudio-connect.dmap-stage.aws.epa.gov/content/74a7f241-6aa1-49e7-99c2-3a5278363e29/?org_idcode=WIDNR
   observe({
     query <- parseQueryString(session$clientData$url_search)
-    if(!is.null(query[['org_idcover']])) {
-      updateSelectInput(session, "org_idcover", selected = query[['org_idcover']])
+    if(!is.null(query[['org_idcode']])) {
+      updateSelectInput(session, "org_idcode", selected = query[['org_idcode']])
     }
   })
   
   observe({
-    req(input$org_idcover != "")
+    req(input$org_idcode != "")
     insertTab(inputId = "tabs",
                          tabPanel(value="help",
                                   icon = icon('circle-info'),
@@ -119,9 +119,9 @@ server <- function(input, output, session) {
                        selected = rv$last_tab)
   })
 
-  statecover <- eventReactive(input$org_idcover,{
-    req(input$org_idcover != "")
-    statecover <- input$org_idcover
+  statecover <- eventReactive(input$org_idcode,{
+    req(input$org_idcode != "")
+    statecover <- input$org_idcode
   })
   
   output$state <- renderUI({
@@ -176,8 +176,8 @@ server <- function(input, output, session) {
   })
   #### ORG Data ----
   output$exists <- renderText({  
-    req(input$org_idcover != "")
-    url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=",input$org_idcover)
+    req(input$org_idcode != "")
+    url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=",input$org_idcode)
     res <- GET(url) 
     json<- fromJSON(rawToChar(res$content))
     data <- json$items
