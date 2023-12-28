@@ -45,7 +45,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("transform", `translate(${margin.left},0)`)
         .style("font-size", small_font_size)
       //  .style('font-weight','bold')
-        .call(d3.axisLeft(y_cond_est).tickFormat( i => primary_data[i]? primary_data[i].Condition: primary_data[i].Condition).tickSize(0))
+        .call(d3.axisLeft(y_cond_est).tickFormat( i => primary_data[i].Condition).tickSize(0))
         .call(g => g.select(".domain").remove())
         .call(g => g.selectAll(".tick line").clone()
             .attr("stroke-opacity", default_stroke_opacity)

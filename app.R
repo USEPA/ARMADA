@@ -12,7 +12,7 @@ ui <-  tagList(
       content on this page is not production ready. This site is being used
       for <strong>development</strong> and/or <strong>testing</strong> purposes
       only.</div>"),
-    includeHTML("www/header.html"),
+    includeHTML("www/header.html")
   ),
   tags$body(
     gfonts::use_pkg_gfont("roboto"),
@@ -30,7 +30,7 @@ ui <-  tagList(
                            "Select a State/Territory/Tribe to View Survey Data", 
                            width = "300px", 
                            c("Select State/Territory/Tribe"="", ORGID)
-               ), 
+               ),
                column(12, align="left",
                       "Section 305(b) of the Federal Clean Water Act (CWA) requires each State to monitor, assess and report on the quality of its waters relative to
             designated uses established in accordance with state defined water quality standards. The data illustrated in the dashboard were collected using 
@@ -46,7 +46,7 @@ ui <-  tagList(
           allIndicatorsOneConditionCategory()
         ),
         tabPanel(
-          "Indicator Summary View", 
+          "Indicator Summary View",
           value = "one_indicator",
           oneIndicatorAllConditionCategories()
         ),
@@ -68,13 +68,16 @@ ui <-  tagList(
 )#tag$list  
 
 server <- function(input, output, session) {
-  # Example: https://https://owshiny.epa.gov/Water-Dashboard/?org_idcover=WIDNR
-  # observe({
-  #   query <- parseQueryString(session$clientData$url_search)
-  #   if(!is.null(query[['org_idcover']])) {
-  #     updateSelectInput(session, "org_idcover", selected = query[['org_idcover']])
-  #   }
-  # })
+  
+  observe_helpers()
+  
+  # Example: https://rstudio-connect.dmap-stage.aws.epa.gov/content/74a7f241-6aa1-49e7-99c2-3a5278363e29/?org_idcover=WIDNR
+  observe({
+    query <- parseQueryString(session$clientData$url_search)
+    if(!is.null(query[['org_idcover']])) {
+      updateSelectInput(session, "org_idcover", selected = query[['org_idcover']])
+    }
+  })
   
   observe({
     req(input$org_idcover != "")
@@ -84,15 +87,8 @@ server <- function(input, output, session) {
                                   verify_fa = FALSE,
                                   span("Help",
                                        style = "font-style:italic;")
-                                  )
-    )
+                                  ))
   })
-  
-  
-  
-  
-  
-  observe_helpers()
   
   rv = reactiveValues()
   #trigger event on tab selection change
@@ -104,13 +100,21 @@ server <- function(input, output, session) {
 
   observe({
     req(input$tabs=="help")
+    if(rv$last_tab == "all_indicator"){
       shinyalert(
-                 imageUrl ='www/help_graphic.svg',
+                 imageUrl ='www/help_graphic_ALL.svg',
                  closeOnClickOutside = TRUE,
                  imageWidth = '900',
                  imageHeight = '550',
                  size = "l"
-      )
+      )} else {
+        shinyalert(
+          imageUrl ='www/help_graphic_ONE.svg',
+          closeOnClickOutside = TRUE,
+          imageWidth = '900',
+          imageHeight = '550',
+          size = "l"
+      )}
       updateNavbarPage(session, "tabs",
                        selected = rv$last_tab)
   })
@@ -391,14 +395,19 @@ observeEvent(allindicator_data(),{
       T1 <- "T1"
       T2 <- "T2"
     }
+    
+    # option to add asterick to designated use
+    use <- one_indicator_data %>% filter(Indicator == input$indicator) %>% mutate(use_label= case_when(USEsort == "B"~ str_c(Indicator, "*"), 
+                                                                                                       TRUE ~ str_c(Indicator))) %>% select(use_label) %>% unique() %>% pull()
+    
     # options passed to javascript
-    options <- list(survey_comment=survey_comment, units=units,T1=T1, T2=T2, resource = input$resource_pop, primary_subpop = input$primary_subpop, comp_subpop = input$comp_subpop, indicator = input$indicator, label_format=input$label, height=dashboard_height, margin_top=margin_top, margin_bottom=margin_bottom, state=names(ORGID_choices[ORGID_choices==input$org_id]), year=year, change=names(ChangeYears()[ChangeYears()==input$changediff]))
+    options <- list(use=use, survey_comment=survey_comment, units=units,T1=T1, T2=T2, resource = input$resource_pop, primary_subpop = input$primary_subpop, comp_subpop = input$comp_subpop, indicator = input$indicator, label_format=input$label, height=dashboard_height, margin_top=margin_top, margin_bottom=margin_bottom, state=names(ORGID_choices[ORGID_choices==input$org_id]), year=year, change=names(ChangeYears()[ChangeYears()==input$changediff]))
     
     # The dashboard is written in d3.js
     # The source code is located in the one_indicator.js file (with additional dependencies)
     r2d3::r2d3(script="www/one_indicator.js", css="www/svg.css", dependencies = c("www/d3-textwrap.min.js", "www/tooltip.js", "www/utils.js", "www/global_var.js"), data=one_indicator_data, d3_version = "6", options = options)
   })
-  })  
+})  
   
   session$onSessionEnded(stopApp)
 }

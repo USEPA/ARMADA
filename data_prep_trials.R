@@ -1,13 +1,3 @@
-myCap.2 <- function(x) {
-  out <- sapply(x, function(y) {
-    idx <- str_locate(y, "\\([^()]+\\)")
-    if (!all(is.na(idx[1,]))) {
-      str_sub(y, idx[,1], nchar(y)) <- toupper(str_sub(y, idx[,1], nchar(y))) 
-    }
-    return(y)
-  })
-  out
-}
 # ORGID<-list(States=
 # c("Alabama"="21AWIC","Alaska"="AKDECWQ","Arizona"="21ARIZ","Arkansas"="ARDEQH2O","California"="CA_SWRCB",
 # "Colorado"="21COL001","Connecticut"="CT_DEP01","Delaware"="21DELAWQ","Georgia"="21GAEPD","Florida"="21FL303D",

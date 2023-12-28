@@ -33,6 +33,16 @@ margin_top <- 160.0
 margin_bottom <- 300.0
 bar_height <- 30
 
+myCap.2 <- function(x) {
+  out <- sapply(x, function(y) {
+    idx <- str_locate(y, "\\([^()]+\\)")
+    if (!all(is.na(idx[1,]))) {
+      str_sub(y, idx[,1], nchar(y)) <- toupper(str_sub(y, idx[,1], nchar(y))) 
+    }
+    return(y)
+  })
+  out
+}
 # ORGID <- c("Alaska"="AKDECWQ", "Arizona"="21ARIZ", "Colorado"="21COL001", "Connecticut"="CT_DEP01", "Florida"="21FL303D", "Iowa"="21IOWA", "Kansas"="21KAN001",
 #            "Massachusetts"="MA_DEP", "Missouri"="MDNR", "New Hampshire"="11113300", "North Dakota"="21NDHDWQ",
 #            "Oklahoma"="OKDEQ", "Pennsylvania"="21PA", "South Carolina"="21SC60WQ", "South Dakota"="SDDENR",

@@ -1,3 +1,38 @@
+let use_label = (d) => {
+    if (options.use === "B")
+        return `${d['Indicator']}*`;
+    else 
+        return `${d['Indicator']}`;
+      }
+
+
+// Define the function to wrap text
+function wrap(text, width) {
+  text.each(function () {
+    const text = d3.select(this);
+    const words = text.text().split(/\s+/).reverse();
+    let word;
+    let line = [];
+    let lineNumber = 0;
+    const lineHeight = 1.1; // Line height
+    const y = text.attr("y");
+    const dy = parseFloat(text.attr("dy"));
+    let tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    }
+  });
+}
+
+
 function getFormattedLabel(d) {
 
 	let formatData = d3.format(".0f");
@@ -172,7 +207,7 @@ function createTitle(view, options) { // primary_subpop, comparison_subpop, cond
 
 	let title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>${options.primary_subpop} Estimates and ${options.change}`;
 	if (view === "one") {
-		title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.indicator}</u></b> | ${options.primary_subpop} Estimates and ${options.change}`;
+		title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | ${options.primary_subpop} Estimates and ${options.change}`;
 	}
 //<span style="color:blue">
    	header.append("text")

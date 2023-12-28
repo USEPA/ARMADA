@@ -48,20 +48,20 @@ r2d3.onRender(function(data, svg, width, height, options) {
         //text wrap this
    	//let wrapper = d3.textwrap().bounds({height: 10, width: margin.left})
    	
+   	
     let y_axis_cond_est = g => g
         .attr("transform", `translate(${margin.left},0)`)
         .style("font-size", small_font_size)
         .call(d3.axisLeft(y_cond_est).tickFormat( i => primary_data[i]["USEsort"] === "B"? primary_data[i].Indicator + '*': primary_data[i].Indicator).tickSize(0))
         // bolds designated uses.
-      .call(g => g.selectAll(".tick")
+      .call(g => g.selectAll(".tick text")
             .style('font-weight', i => (primary_data[i]["USEsort"] === "B")? 'bold' : 'normal')
-        //    .data(primary_data)
+          //  .data(primary_data)
+          //  .call(wrap, margin.left*0.80)
          //   .call(tooltip, tooltipDiv, "indicator")
         )
 
-  
- //  	.selectAll(".tick text")
-  //        .call(wrapper, margin.left)
+
           
         .call(g => g.select(".domain").remove())
         
