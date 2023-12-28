@@ -27,7 +27,7 @@ json<- fromJSON(rawToChar(res$content))
 data <- json$items
 
 shiny::validate(
-  need(length(data)!=0, 'Data Not Available for State/Territory.')
+  need(length(data)!=0, 'Data Not Available for State/Territory/Tribe.')
 )
 
 show_modal_spinner(spin = "circle", text = 'Fetching Data')
