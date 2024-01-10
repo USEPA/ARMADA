@@ -1,0 +1,16 @@
+packages:
+- packages:
+    - name: dplyr
+    - name: purrr
+    - name: stringr
+    - name: tibble
+    - name: tidyr
+    - name: gfonts
+    - name: httr
+    - name: jsonlite
+    - name: r2d3
+    - name: capture
+    - name: shinybusy
+    - name: shinyhelper
+    - name: shinyalert
+    - name: remotes
