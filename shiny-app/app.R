@@ -34,7 +34,7 @@ ui <-  tagList(
                column(12, align="left",
                       "Section 305(b) of the Federal Clean Water Act (CWA) requires each State to monitor, assess and report on the quality of its waters relative to
             designated uses established in accordance with state defined water quality standards. The data illustrated in the dashboard were collected using 
-            probability, or statistically based sampling, which allows states to extrapolate the results from the sample sites to the broader population of aquatic resources. 
+            statistically-valid surveys, which allows states to extrapolate the results from the sample sites to the broader population of aquatic resources. 
             Information presented are intended to assist states and the public to track progress in addressing water pollution, identify trends over time, recognize emerging problems 
             and determine effectiveness of water management programs."
             )
@@ -70,7 +70,8 @@ ui <-  tagList(
 server <- function(input, output, session) {
   
   observe_helpers()
-  
+
+
   # Example: https://rstudio-connect.dmap-stage.aws.epa.gov/content/74a7f241-6aa1-49e7-99c2-3a5278363e29/?org_idcode=WIDNR
   observe({
     query <- parseQueryString(session$clientData$url_search)
@@ -119,19 +120,15 @@ server <- function(input, output, session) {
                        selected = rv$last_tab)
   })
 
-  statecover <- eventReactive(input$org_idcode,{
-    req(input$org_idcode != "")
-    statecover <- input$org_idcode
-  })
-  
+
   output$state <- renderUI({
-    req(statecover())
-    statecover <- statecover()
+    req(input$org_idcode != "")
+
     selectInput("org_id",
                 span("Select a State/Territory/Tribe", 
                      style = "font-weight: bold; font-size: 16px"),
                 choices=ORGID,
-                selected=statecover)
+                selected=input$org_idcode)
   })
   
   #### ObserveEvents----
@@ -154,10 +151,7 @@ server <- function(input, output, session) {
                       "condition_category",
                       choices=Data() %>% filter(Resource==input$resource_pop & 
                                                 Subpopulation==input$primary_subpop) %>% select(Condition) %>% unique() %>%
-                        arrange(factor(Condition, levels = c("Excellent", "Excellent Condition", "Very Good", "Optimal", "Pass", "Good", "Supporting Use", "Meeting", "Fully Supporting", "Fully supporting", "Meets", "Supports", "Support", "Not Detected", "At or Below Benchmark", "Low", "Attaining", "Good Condition", "Least Disturbed",
-                                                             "Fair", "Inconclusive", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate",
-                                                             "Poor", "Fail", "Not Supporting Use", "Violating", "Suboptimal", "Not Supporting", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed",
-                                                             "Missing", "Not Assessed", "Insufficient Information"))) %>% pull()
+                        arrange(factor(Condition, levels = condition_levels)) %>% pull()
     )
     updateSelectInput(session,
                       "indicator",
@@ -193,7 +187,6 @@ server <- function(input, output, session) {
   
   Data <- eventReactive(input$org_id, {
     req(input$org_id != "" )
-    
     source("data_prep_trials.R", local = TRUE)$value
   })
   
@@ -255,7 +248,7 @@ server <- function(input, output, session) {
               input$condition_category %in% c("Poor", "Fail", "Not Supporting Use", "Violating", "Suboptimal", "Not Supporting", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed") ~ '#condition_category ~ .selectize-control.single .selectize-input {
                                             border-color: #f99c9c; border-width: 3px;
                                         }',
-              input$condition_category %in% c("Missing", "Not Assessed", "Insufficient Information") ~ '#condition_category ~ .selectize-control.single .selectize-input {
+              input$condition_category %in% c("Missing", "Not Assessed", "Insufficient Information", "Indeterminate", "Unassessed") ~ '#condition_category ~ .selectize-control.single .selectize-input {
                                             border-color: #e8ccbe; border-width: 3px;
                                         }',
               TRUE  ~ '#condition_category ~ .selectize-control.single .selectize-input {
@@ -396,7 +389,7 @@ observeEvent(allindicator_data(),{
       T2 <- "T2"
     }
     
-    # option to add asterick to designated use
+    # option to add asterisk to designated use
     use <- one_indicator_data %>% filter(Indicator == input$indicator) %>% mutate(use_label= case_when(USEsort == "B"~ str_c(Indicator, "*"), 
                                                                                                        TRUE ~ str_c(Indicator))) %>% select(use_label) %>% unique() %>% pull()
     

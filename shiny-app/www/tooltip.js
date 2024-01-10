@@ -16,7 +16,7 @@ let getChangeTooltip = (d) => {
             (${tip_format(d['Early.LCB'])} to ${tip_format(d['Early.UCB'])}%)<br>
             <strong>${d['T1_Year']}:</strong> ${tip_format(d['T1.P.Estimate'])}% 
             (${tip_format(d['T1.LCB'])} to ${tip_format(d['T1.UCB'])}%) <hr style="margin: 10px;">
-           <em> Explanation: In ${d['Early_Year']}, ${tip_format(d['Early.P.Estimate'])}% of ${d['Resource']} resources were in ${d['Condition']} condition for ${d['Indicator']}. In the most recent survey year (${d['T1_Year']}), the estimate has changed to  ${tip_format(d['T1.P.Estimate'])}% . </em><br>`;
+           <em> Explanation: In ${d['Early_Year']}, ${tip_format(d['Early.P.Estimate'])}% of ${d['Resource']} resources were in ${d['Condition']} condition for ${d['Indicator']}. In the most recent survey year (${d['T1_Year']}), the estimate has changed to  ${tip_format(d['T1.P.Estimate'])}%. </em><br>`;
 }
 
 let getLongTermChangeTooltip = (d) => {

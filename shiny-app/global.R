@@ -89,3 +89,9 @@ ORGID_choices<-c("Alabama"="21AWIC","Alaska"="AKDECWQ","Arizona"="21ARIZ","Arkan
                 "Pueblo of Tesuque, NM"="PUEBLOOFTESUQUE","Red Lake Band of Chippewa Indians, MN"="REDLAKE","Sac & Fox Nation, OK"="SFNOES",
                 "Seneca-Cayuga Nation"="SCEQ","The Chickasaw Nation"="CNENVSER","The Choctaw Nation of Oklahoma"="CHOCNAT",
                 "Ute Mountain Ute Tribe"="UTEMTN")
+
+condition_levels <- c("Excellent", "Excellent Condition", "Very Good", "Optimal", "Pass", "Good", "Supporting Use", "Meeting", "Fully Supporting", "Fully supporting", "Meets", "Supports", "Support", "Not Detected", "At Or Below Benchmark", "Low", "Attaining", "Good Condition", "Least Disturbed",
+                      "Fair", "Inconclusive", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate",
+                      "Poor", "Fail", "Not Supporting Use", "Violating", "Suboptimal", "Not Supporting", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed",
+                      "Missing", "Not Assessed", "Insufficient Information", "Indeterminate", "Unassessed")
+

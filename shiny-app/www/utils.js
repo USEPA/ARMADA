@@ -1,36 +1,36 @@
-let use_label = (d) => {
-    if (options.use === "B")
-        return `${d['Indicator']}*`;
-    else 
-        return `${d['Indicator']}`;
-      }
+//let use_label = (d) => {
+//    if (options.use === "B")
+//        return `${d['Indicator']}*`;
+//    else 
+//        return `${d['Indicator']}`;
+//      }
 
 
 // Define the function to wrap text
-function wrap(text, width) {
-  text.each(function () {
-    const text = d3.select(this);
-    const words = text.text().split(/\s+/).reverse();
-    let word;
-    let line = [];
-    let lineNumber = 0;
-    const lineHeight = 1.1; // Line height
-    const y = text.attr("y");
-    const dy = parseFloat(text.attr("dy"));
-    let tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+//function wrap(text, width) {
+//  text.each(function () {
+//    const text = d3.select(this);
+//    const words = text.text().split(/\s+/).reverse();
+//    let word;
+//    let line = [];
+//    let lineNumber = 0;
+//    const lineHeight = 1.1; // Line height
+//    const y = text.attr("y");
+//    const dy = parseFloat(text.attr("dy"));
+//    let tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
 
-    while (word = words.pop()) {
-      line.push(word);
-      tspan.text(line.join(" "));
-      if (tspan.node().getComputedTextLength() > width) {
-        line.pop();
-        tspan.text(line.join(" "));
-        line = [word];
-        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-      }
-    }
-  });
-}
+//    while (word = words.pop()) {
+//      line.push(word);
+//      tspan.text(line.join(" "));
+//      if (tspan.node().getComputedTextLength() > width) {
+//        line.pop();
+//        tspan.text(line.join(" "));
+//        line = [word];
+//        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+//      }
+//    }
+//  });
+//}
 
 
 function getFormattedLabel(d) {
@@ -62,9 +62,9 @@ function isRecordNA(view, d) {
 
 /* This needs to be CategoryConditionColor!*/
 function getMarkerColor(condition) {
-	if (condition==="Pass"||condition==="Good"||condition==="Supporting Use"||condition==="Meeting"||condition==="Fully Supporting"||condition==="Meets"||condition==="Supports"||condition==="Support"||condition==="Excellent"||condition==="Not Detected"||condition==="At or Below Benchmark"||condition==="Low"||condition==="Attaining"||condition==="Very Good"||condition==="Good Condition"||condition==="Excellent Condition"||condition==="Least Disturbed"||condition==="Optimal")
+	if (condition==="Pass"||condition==="Good"||condition==="Supporting Use"||condition==="Meeting"||condition==="Fully Supporting"||condition==="Meets"||condition==="Supports"||condition==="Support"||condition==="Excellent"||condition==="Not Detected"||condition==="At Or Below Benchmark"||condition==="Low"||condition==="Attaining"||condition==="Very Good"||condition==="Good Condition"||condition==="Excellent Condition"||condition==="Least Disturbed"||condition==="Optimal")
 		return good_color;
-	else if (condition === "Fair"||condition === "Partially Supporting"||condition==="Satisfactory"||condition==="Moderate"||condition==="Potentially Not Supporting"||condition==="Fair Condition"||condition==="Intermediate"||condition==="Inconclusive")
+	else if (condition === "Fair"||condition === "Partially Supporting"||condition==="Satisfactory"||condition==="Moderate"||condition==="Potentially Not Supporting"||condition==="Fair Condition"||condition==="Intermediate")
 		return fair_color;
 	else if (condition === "Fail"||condition==="Poor"||condition==="Not Supporting Use"||condition==="Violating"||condition==="Not Supporting"||condition==="Violates"||condition==="Violates Natural"||condition==="Impaired"||condition==="Detected"||condition==="Above Benchmark"||condition==="High"||condition==="Poor Condition"||condition==="Most Disturbed"||condition==="Suboptimal")
 		return poor_color;

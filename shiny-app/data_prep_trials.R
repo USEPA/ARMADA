@@ -3,7 +3,7 @@
 # "Colorado"="21COL001","Connecticut"="CT_DEP01","Delaware"="21DELAWQ","Georgia"="21GAEPD","Florida"="21FL303D",
 # "Hawaii"="21HI","Idaho"="IDEQ","Illinois"="IL_EPA","Indiana"="21IND","Iowa"="21IOWA","Kansas"="21KAN001",
 # "Kentucky"="21KY","Louisiana"="LADEQWPD","Maine"="MEDEP","Maryland"="MDE_EASP","Massachusetts"="MA_DEP",
-# "Michigan"="21MICH","Minnesota"="MNPCA","Mississippi"="21MSWQ","Missouri"="MDNR","Montana"="MDNR","Nebraska"="21NEB001",
+# "Michigan"="21MICH","Minnesota"="MNPCA","Mississippi"="21MSWQ","Missouri"="MDNR","Montana"="MTDEQ","Nebraska"="21NEB001",
 # "Nevada"="21NEV1","New Hampshire"="11113300","New Jersey"="21NJDEP1","New Mexico"="21NMEX","New York"="21NYDECA",
 # "North Carolina"="21NC01WQ","North Dakota"="21NDHDWQ","Oklahoma"="OKDEQ","Oregon"="OREGONDEQ","Pennsylvania"="21PA",
 # "Rhode Island"="RIDEM","South Carolina"="21SC60WQ","South Dakota"="SDDENR","Tennessee"="TDECWR","Texas"="TCEQMAIN",
@@ -16,14 +16,12 @@
 # 
 # 
 #url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=11113300")
-#url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=21SC60WQ")
-#url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=21COL001")
 # ATTAINS API ----
 # Connect to ATTAINS database and pull survey data by Organization ID 
 
 url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=",input$org_id)
 res <- GET(url) 
-json<- fromJSON(rawToChar(res$content))
+json <- fromJSON(rawToChar(res$content))
 data <- json$items
 
 shiny::validate(
@@ -163,10 +161,7 @@ all_surveys <- all_surveys %>%
   mutate(Indicator = case_when(str_detect(Indicator, "[)]") & USEsort=="A" ~ myCap.2(Indicator),
                                TRUE ~ Indicator)) %>%
   arrange(OVERALLsort, Subpopulation, surveyUseCode, USEsort) %>%
-  arrange(factor(Condition, levels = c("Excellent", "Excellent Condition", "Very Good", "Pass", "Good", "Optimal", "Supporting Use", "Meeting", "Fully Supporting", "Fully supporting", "Meets", "Supports", "Support", "Not Detected", "At or Below Benchmark", "Low", "Attaining", "Good Condition", "Least Disturbed",
-                                       "Fair", "Inconclusive", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate",
-                                       "Poor", "Fail", "Not Supporting Use", "Violating", "Not Supporting", "Suboptimal", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed",
-                                       "Missing", "Not Assessed","Insufficient Information")))
+  arrange(factor(Condition, levels = condition_levels))
   
 remove_modal_spinner()
 

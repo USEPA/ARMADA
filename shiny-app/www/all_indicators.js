@@ -138,10 +138,10 @@ r2d3.onRender(function(data, svg, width, height, options) {
      *********************************************/
 
     let x_change_padding = 0.1;
-    let x_change_left_padding = 5;
-    let x_change_right_padding = 5;
+    let x_change_left_padding = 2;
+    let x_change_right_padding = 2;
     let x_change = d3.scaleBand()
-        .domain([T1, T2])
+        .domain([T1,T2])
         .range([margin.left + cond_est_width + x_change_left_padding, dashboard_width - long_term_change_width - margin.right - x_change_right_padding])
         .padding(x_change_padding);
 
