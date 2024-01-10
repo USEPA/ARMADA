@@ -3,7 +3,7 @@
     "image": "ghcr.io/rocker-org/devcontainer/geospatial:4",
     "features": {
         "ghcr.io/rocker-org/devcontainer-features/r-packages:1": {
-            "packages": "github::USEPA/TADA,config,golem,readxl,writexl,leaflet,shiny,shinyWidgets,shinyjs,shinycssloaders,DT,ggplot2,shinybusy,dplyr,plyr,tidyr,scales,forcats,RColorBrewer,lubridate,plotly",
+            "packages": "shiny,dplyr,purrr,stringr,tidyr,gfonts,httr,jsonlite,r2d3,github::dreamRs/capture,shinybusy,shinyhelper,shinyalert",
             "installSystemRequirements": true
         }
     },
