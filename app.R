@@ -248,7 +248,7 @@ server <- function(input, output, session) {
               input$condition_category %in% c("Poor", "Fail", "Not Supporting Use", "Violating", "Suboptimal", "Not Supporting", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed") ~ '#condition_category ~ .selectize-control.single .selectize-input {
                                             border-color: #f99c9c; border-width: 3px;
                                         }',
-              input$condition_category %in% c("Missing", "Not Assessed", "Insufficient Information", "Indeterminate", "Unassessed") ~ '#condition_category ~ .selectize-control.single .selectize-input {
+              input$condition_category %in% c("Missing", "Not Assessed", "Insufficient Information", "Indeterminate", "Unassessed","Unknown") ~ '#condition_category ~ .selectize-control.single .selectize-input {
                                             border-color: #e8ccbe; border-width: 3px;
                                         }',
               TRUE  ~ '#condition_category ~ .selectize-control.single .selectize-input {
