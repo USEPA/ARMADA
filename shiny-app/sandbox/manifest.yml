@@ -1,9 +1,0 @@
-applications:
-- name: partner-dashboard-test
-  memory: 500M
-  routes:
-    - route: partner-dashboard-test.app.cloud.gov
-  disk_quota: 500M
-  buildpacks:
-    - r_buildpack
-  command: R -f shiny.R
