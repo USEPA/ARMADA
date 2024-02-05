@@ -195,7 +195,7 @@ server <- function(input, output, session) {
     req(input$primary_subpop, input$resource_pop, input$org_id)
     filter(Data(), 
            Resource == input$resource_pop &
-             Subpopulation == input$primary_subpop) %>%
+           Subpopulation == input$primary_subpop) %>%
       select_if(~any(!is.na(.)))
   })
   
@@ -248,7 +248,7 @@ server <- function(input, output, session) {
               input$condition_category %in% c("Poor", "Fail", "Not Supporting Use", "Violating", "Suboptimal", "Not Supporting", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed") ~ '#condition_category ~ .selectize-control.single .selectize-input {
                                             border-color: #f99c9c; border-width: 3px;
                                         }',
-              input$condition_category %in% c("Missing", "Not Assessed", "Insufficient Information", "Indeterminate", "Unassessed") ~ '#condition_category ~ .selectize-control.single .selectize-input {
+              input$condition_category %in% c("Missing", "Not Assessed", "Insufficient Information", "Indeterminate", "Unassessed", "Unknown") ~ '#condition_category ~ .selectize-control.single .selectize-input {
                                             border-color: #e8ccbe; border-width: 3px;
                                         }',
               TRUE  ~ '#condition_category ~ .selectize-control.single .selectize-input {
@@ -265,7 +265,7 @@ server <- function(input, output, session) {
 
   
   #### All Indicators Dashboard ----
-observeEvent(allindicator_data(),{
+observeEvent(c(allindicator_data(), input$tabs), {
     # Builds the dashboard located in the All Indicators, One Condition Category tab
     output$allindicators <- r2d3::renderD3({
       req(input$org_id, input$resource_pop, input$primary_subpop, input$condition_category, input$changediff, !is.na(Dashboarddata()), ChangeYears())
@@ -298,6 +298,11 @@ observeEvent(allindicator_data(),{
                  T1T2_DIFF.P = NA)
       }
       
+      year <- all_indicators_data %>% select(T1_Year) %>% unique() %>% pull()
+      units <- all_indicators_data %>% select(Units) %>% unique() %>% pull()
+      margin_top <- if(nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) <= 75){
+        120} else{160}
+      
       getDashboardHeight <- function(data, primary_subpop, indicator, view) {
         primary_subpop_data <- data %>% dplyr::filter(
           Resource == input$resource_pop &
@@ -314,9 +319,9 @@ observeEvent(allindicator_data(),{
       
       
       dashboard_height <- getDashboardHeight(all_indicators_data, input$primary_subpop, NA, "all")
-      year <- all_indicators_data %>% select(T1_Year) %>% unique() %>% pull()
-      units <- all_indicators_data %>% select(Units) %>% unique() %>% pull()
+      
       survey_comment <- all_indicators_data %>% select(survey_comment) %>% unique() %>% pull()
+      
       if(input$changediff != "Only One Year Available"){
         T1 <- str_sub(names(ChangeYears()[ChangeYears()==input$changediff]), start= 15, end=16)
         T2 <- str_sub(names(ChangeYears()[ChangeYears()==input$changediff]), start= 23, end=24)
@@ -325,6 +330,7 @@ observeEvent(allindicator_data(),{
         T2 <- "T2"
       }
       
+     
       # options passed to javascript
       options <- list(survey_comment=survey_comment, units=units, T1=T1, T2=T2, resource = input$resource_pop, primary_subpop = input$primary_subpop, comp_subpop = input$comp_subpop, condition = input$condition_category, label_format=input$label, height=dashboard_height, margin_top=margin_top, margin_bottom=margin_bottom, state=names(ORGID_choices[ORGID_choices==input$org_id]), year=year, change=names(ChangeYears()[ChangeYears()==input$changediff]))
       
@@ -333,7 +339,7 @@ observeEvent(allindicator_data(),{
       r2d3::r2d3(script="www/all_indicators.js", css="www/svg.css", dependencies = c("www/d3-textwrap.min.js", "www/tooltip.js", "www/utils.js", "www/global_var.js"), data=all_indicators_data, d3_version = "6", options = options)
     })
 })
-  observeEvent(oneindicator_data(),{
+  observeEvent(c(oneindicator_data(), input$tabs),{
   #### One Indicator Dashboard ----
   # Builds the dashboard located in the One Indicator, All Condition Categories tab
   output$oneindicator <- r2d3::renderD3({
@@ -364,6 +370,19 @@ observeEvent(allindicator_data(),{
                T1T2_DIFF.P = NA)
     }
     
+    year <- one_indicator_data %>% select(T1_Year) %>% unique() %>% pull()
+    units <- one_indicator_data %>% select(Units) %>% unique() %>% pull()
+    
+    margin_top <- if(nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 75 &
+                     nchar(paste0(input$indicator, " | ", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) > 116){
+      190
+    } else if(nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 75 &
+              nchar(paste0(input$indicator, " | ", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) <= 116){
+      120 
+    } else{
+      160
+    }
+    
     getDashboardHeight <- function(data, primary_subpop, indicator, view) {
       primary_subpop_data <- data %>% dplyr::filter(
         Resource == input$resource_pop &
@@ -378,8 +397,7 @@ observeEvent(allindicator_data(),{
       dashboard_height
     }
     dashboard_height <- getDashboardHeight(one_indicator_data, input$primary_subpop, input$indicator, "one")
-    year <- one_indicator_data %>% select(T1_Year) %>% unique() %>% pull()
-    units <- one_indicator_data %>% select(Units) %>% unique() %>% pull()
+    
     survey_comment <- one_indicator_data %>% select(survey_comment) %>% unique() %>% pull()
     if(input$changediff != "Only One Year Available"){
       T1 <- str_sub(names(ChangeYears()[ChangeYears()==input$changediff]), start= 15, end=16)
@@ -392,7 +410,7 @@ observeEvent(allindicator_data(),{
     # option to add asterisk to designated use
     use <- one_indicator_data %>% filter(Indicator == input$indicator) %>% mutate(use_label= case_when(USEsort == "B"~ str_c(Indicator, "*"), 
                                                                                                        TRUE ~ str_c(Indicator))) %>% select(use_label) %>% unique() %>% pull()
-    
+     
     # options passed to javascript
     options <- list(use=use, survey_comment=survey_comment, units=units,T1=T1, T2=T2, resource = input$resource_pop, primary_subpop = input$primary_subpop, comp_subpop = input$comp_subpop, indicator = input$indicator, label_format=input$label, height=dashboard_height, margin_top=margin_top, margin_bottom=margin_bottom, state=names(ORGID_choices[ORGID_choices==input$org_id]), year=year, change=names(ChangeYears()[ChangeYears()==input$changediff]))
     

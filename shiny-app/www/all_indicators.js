@@ -45,9 +45,6 @@ r2d3.onRender(function(data, svg, width, height, options) {
     let x_cond_est = d3.scaleLinear()
         .domain([0, 120])
         .range([margin.left, cond_est_width + margin.left]);
-        //text wrap this
-   	//let wrapper = d3.textwrap().bounds({height: 10, width: margin.left})
-   	
    	
     let y_axis_cond_est = g => g
         .attr("transform", `translate(${margin.left},0)`)
@@ -56,8 +53,11 @@ r2d3.onRender(function(data, svg, width, height, options) {
         // bolds designated uses.
       .call(g => g.selectAll(".tick text")
             .style('font-weight', i => (primary_data[i]["USEsort"] === "B")? 'bold' : 'normal')
-          //  .data(primary_data)
-          //  .call(wrap, margin.left*0.80)
+            .data(primary_data)
+            .call(wrap, margin.left)
+            .attr('dx', '-.5em')
+           // .attr("y", -8)
+           // .attr("y", i => (getComputedTextLength(primary_data[i].Indicator) > 30)? -7 : 0)
          //   .call(tooltip, tooltipDiv, "indicator")
         )
 
