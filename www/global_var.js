@@ -1,7 +1,6 @@
 console = d3.window(svg.node()).console;
 
 // Chart Setup Declarations
-let survey_comment = options.survey_comment
 let margin = ({ top: options.margin_top, right: 1, bottom: options.margin_bottom, left: 240 });
 let dashboard_width = 900;
 
@@ -46,4 +45,4 @@ let control_bar_height_str = d3.select(".controls-container").style("height");
 let control_bar_height = parseFloat(control_bar_height_str.substring(0, control_bar_height_str.length - 2));
 
 let significance_footnote = "<span class='footer-semi-bold'>Represents that the Indicator is identified as a Designated Use or Condition by the State/Territory/Tribe in the ATTAINS database.</span>";
-let dashboard_note = `<br>${options.survey_comment}<br><hr><span class='footer-semi-bold'>About the Dashboard</span>: This dashboard displays statistical survey results which provide an overall picture of water quality condition across a State/Territory/Tribe. From left to right, the graphs display the percentage of aquatic resources in different conditions for the most recent survey year available and a change comparison from the selected survey years. Explore different resource types, subpopulations, condition categories and survey years by using the dropdowns on the right. Hover over a result to see more information and an explanation of the results. For national survey data, please visit <a href='https://www.epa.gov/national-aquatic-resource-surveys'>EPA’s webpage for the National Aquatic Resource Surveys</a>.</span>`
+

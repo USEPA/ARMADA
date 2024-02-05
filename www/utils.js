@@ -1,36 +1,36 @@
-//let use_label = (d) => {
-//    if (options.use === "B")
-//        return `${d['Indicator']}*`;
-//    else 
-//        return `${d['Indicator']}`;
-//      }
-
-
 // Define the function to wrap text
-//function wrap(text, width) {
-//  text.each(function () {
-//    const text = d3.select(this);
-//    const words = text.text().split(/\s+/).reverse();
-//    let word;
-//    let line = [];
-//    let lineNumber = 0;
-//    const lineHeight = 1.1; // Line height
-//    const y = text.attr("y");
-//    const dy = parseFloat(text.attr("dy"));
-//    let tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+function wrap(text, width) {
+  text.each(function () {
+    const text = d3.select(this);
+    const words = text.text().split(/\s+/).reverse();
+    let word;
+    let line = [];
+    let lineNumber = 0;
+    const lineHeight = 1.1; // Line height
+   const y = text.attr("y");
+    const dy = parseFloat(text.attr("dy"));
+    let tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
 
-//    while (word = words.pop()) {
-//      line.push(word);
-//      tspan.text(line.join(" "));
-//      if (tspan.node().getComputedTextLength() > width) {
-//        line.pop();
-//        tspan.text(line.join(" "));
-//        line = [word];
-//        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
-//      }
-//    }
-//  });
-//}
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan")
+        .attr("x", 0)
+        .attr("y", y)
+        .attr('dx', '-.5em')
+        .attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    }
+    if (lineNumber > 0) {
+        text.selectAll("tspan")
+         .attr("y", -7);
+        }
+  });
+}
 
 
 function getFormattedLabel(d) {
@@ -193,7 +193,7 @@ function createFooter(svg, options) {
       .attr("text-anchor", "left")
       .attr("x", 0)
       .attr("y", options.height - margin.bottom + footnote_top_padding + footer_line_height)
-      .text(dashboard_note);
+      .text(`<br>${options.survey_comment}<br><hr><span class='footer-semi-bold'>About the Dashboard</span>: This dashboard displays statistical survey results which provide an overall picture of water quality condition across a State/Territory/Tribe. From left to right, the graphs display the percentage of aquatic resources in different conditions for the most recent survey year available and a change comparison from the selected survey years. Explore different resource types, subpopulations, condition categories and survey years by using the dropdowns on the right. Hover over a result to see more information and an explanation of the results. For national survey data, please visit <a href='https://www.epa.gov/national-aquatic-resource-surveys'>EPA’s webpage for the National Aquatic Resource Surveys</a>.</span>`);
 
    	let wrap = d3.textwrap().bounds({height: margin.bottom - footnote_top_padding, width: dashboard_width - asterisk_offset})
    	svg.selectAll('.footer text').call(wrap);

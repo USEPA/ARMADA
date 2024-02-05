@@ -15,7 +15,7 @@
 #
 # 
 # 
-#url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=11113300")
+#url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=21KAN001")
 # ATTAINS API ----
 # Connect to ATTAINS database and pull survey data by Organization ID 
 
@@ -160,7 +160,7 @@ all_surveys <- all_surveys %>%
          Resource = str_to_title(Resource)) %>%
   mutate(Indicator = case_when(str_detect(Indicator, "[)]") & USEsort=="A" ~ myCap.2(Indicator),
                                TRUE ~ Indicator)) %>%
-  arrange(OVERALLsort, Subpopulation, surveyUseCode, USEsort) %>%
+  arrange(OVERALLsort, Subpopulation, surveyUseCode, desc(USEsort)) %>%
   arrange(factor(Condition, levels = condition_levels))
   
 remove_modal_spinner()
