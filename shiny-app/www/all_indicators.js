@@ -53,9 +53,9 @@ r2d3.onRender(function(data, svg, width, height, options) {
         // bolds designated uses.
       .call(g => g.selectAll(".tick text")
             .style('font-weight', i => (primary_data[i]["USEsort"] === "B")? 'bold' : 'normal')
-            .data(primary_data)
-            .call(wrap, margin.left)
-            .attr('dx', '-.5em')
+            //.data(primary_data)
+            //.call(wrap, margin.left)
+            //.attr('dx', '-.5em')
            // .attr("y", -8)
            // .attr("y", i => (getComputedTextLength(primary_data[i].Indicator) > 30)? -7 : 0)
          //   .call(tooltip, tooltipDiv, "indicator")
