@@ -24,11 +24,13 @@ input_packs <- unlist(str_split(args[2], ","))
 
 message(paste(input_packs), sep = " ")
 
-plfrm <- paste(getRversion(), R.version["platform"],
+# Only use the first 3 characters of R version (i.e., R 4.3 instead of 4.3.2)
+r_version_short <- substr(getRversion(), 1, 3)
+
+plfrm <- paste(r_version_short, R.version["platform"],
     R.version["arch"], R.version["os"])
 
-# Only use the first 3 characters of R version (i.e., R 4.3 instead of 4.3.2)
-options(HTTPUserAgent = sprintf("R/%s R (%s)", substr(getRversion(), 1, 3), plfrm))
+options(HTTPUserAgent = sprintf("R/%s R (%s)", r_version_short, plfrm))
 
 # Packages that should be pulled from GitHub
 github_packages_list <- list(c("TADA", "USEPA/TADA"), c("capture", "dreamRs/capture"))
