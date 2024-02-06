@@ -56,7 +56,7 @@ Version: 0.1.4
 Imports: htmltools, jsonlite, shiny, tools
 Suggests: knitr, rmarkdown, leaflet, dygraphs
 License: GPL-3
-MD5sum: 771e332256cb8ba1e2467aed36ff4853
+MD5sum: 8c042adc3c110cffb7e1107c58c642a6
 NeedsCompilation: no
 
 Package: cli
