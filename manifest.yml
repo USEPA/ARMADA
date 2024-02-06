@@ -1,7 +1,6 @@
 applications:
 - name: partner-dashboard
   memory: 500M
-  random-route: true
   disk_quota: 2G
   buildpacks:
     - r_buildpack
