@@ -1,5 +1,5 @@
 applications:
-- name: partner-dashboard-sandbox
+- name: partner-dashboard
   memory: 500M
   disk_quota: 2G
   buildpacks:
