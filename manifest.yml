@@ -2,7 +2,7 @@ applications:
 - name: partner-dashboard
   memory: 500M
     routes:
-    - route: partner-dashboard-sandbox.app.cloud.gov
+    - route: partner-dashboard-sandbox
   disk_quota: 2G
   buildpacks:
     - r_buildpack
