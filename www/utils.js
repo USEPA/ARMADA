@@ -32,17 +32,16 @@ function wrap(text, width) {
   });
 }
 
-
 function getFormattedLabel(d) {
 
 	let formatData = d3.format(".0f");
 
 	if (d !== 0)  {
-		if (d > 99.5 && d < 100.0) {
+		if (d > 99 && d < 100.0) {
 			return ">99";
 		}
-		else if (d < 0.5 && d > 0.0) {
-			return "<0.5";
+		else if (d < 1 && d > 0.0) {
+			return "<1";
 		}
 	}
 
@@ -146,24 +145,24 @@ function createDashAxisBar(svg, width, x_cond_est, x_long_term_change, cond_est_
    		
 }
 
-// function createWatermark(svg) {
+/* function createWatermark(svg) {
   
-//   let watermark = svg.append("g").attr("class", "watermark");
+   let watermark = svg.append("g").attr("class", "watermark");
 
- //  let watermark_width = 440;
-//   let watermark_height = 60;
-//   let watermark_offset = 95;
+   let watermark_width = 440;
+   let watermark_height = 60;
+   let watermark_offset = 95;
 
-//  watermark.append("text")
-//     .attr("text-anchor", "right")
-//     .attr("x", cond_est_width + change_width + watermark_offset)
-//     .attr("y", 0)
-//     .text("DRAFT - NOT FOR DISTRIBUTION - DATA ARE NOT FINAL");
+  watermark.append("text")
+     .attr("text-anchor", "right")
+     .attr("x", cond_est_width + change_width + watermark_offset)
+     .attr("y", 0)
+     .text("DRAFT - NOT FOR DISTRIBUTION - DATA ARE NOT FINAL");
 
-//   let wrap = d3.textwrap().bounds({height: watermark_height, width: watermark_width});
-//   svg.selectAll('.watermark text').call(wrap);
+   let wrap = d3.textwrap().bounds({height: watermark_height, width: watermark_width});
+   svg.selectAll('.watermark text').call(wrap);
 
-// }
+ }*/
 
 
 
@@ -193,7 +192,7 @@ function createFooter(svg, options) {
       .attr("text-anchor", "left")
       .attr("x", 0)
       .attr("y", options.height - margin.bottom + footnote_top_padding + footer_line_height)
-      .text(`<br>${options.survey_comment}<br><hr><span class='footer-semi-bold'>About the Dashboard</span>: This dashboard displays statistical survey results which provide an overall picture of water quality condition across a State/Territory/Tribe. From left to right, the graphs display the percentage of aquatic resources in different conditions for the most recent survey year available and a change comparison from the selected survey years. Explore different resource types, subpopulations, condition categories and survey years by using the dropdowns on the right. Hover over a result to see more information and an explanation of the results. For national survey data, please visit <a href='https://www.epa.gov/national-aquatic-resource-surveys'>EPA’s webpage for the National Aquatic Resource Surveys</a>.</span>`);
+      .text(`<br>${options.survey_comment}<br><hr><span class='footer-semi-bold'>About the Dashboard</span>: This dashboard displays statistical survey results which provide an overall picture of water quality condition across a State/Territory/Tribe. From left to right, the graphs display the percentage of aquatic resources in different conditions for the most recent survey year available and a change comparison from the selected survey years. Please note that the years shown are the years survey data was reported and not necessarily the collection year. Explore different resource types, subpopulations, condition categories and survey years by using the dropdowns on the right. Hover over a result to see more information and an explanation of the results. For national survey data, please visit <a href='https://www.epa.gov/national-aquatic-resource-surveys'>EPA’s webpage for the National Aquatic Resource Surveys</a>.</span>`);
 
    	let wrap = d3.textwrap().bounds({height: margin.bottom - footnote_top_padding, width: dashboard_width - asterisk_offset})
    	svg.selectAll('.footer text').call(wrap);
@@ -222,3 +221,6 @@ function createTitle(view, options) { // primary_subpop, comparison_subpop, cond
 }
 
 let tip_format = d3.format(".1f");
+let formatNumber = d3.format(",");
+
+

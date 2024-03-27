@@ -1,7 +1,7 @@
 console = d3.window(svg.node()).console;
 
 // Chart Setup Declarations
-let margin = ({ top: options.margin_top, right: 1, bottom: options.margin_bottom, left: 240 });
+let margin = ({ top: options.margin_top, right: 0, bottom: options.margin_bottom, left: 225 });
 let dashboard_width = 900;
 
 let stroke_color = "#ddd";
@@ -44,5 +44,6 @@ let ci_bar_height = 2;
 let control_bar_height_str = d3.select(".controls-container").style("height");
 let control_bar_height = parseFloat(control_bar_height_str.substring(0, control_bar_height_str.length - 2));
 
-let significance_footnote = "<span class='footer-semi-bold'>Represents that the Indicator is identified as a Designated Use or Condition by the State/Territory/Tribe in the ATTAINS database.</span>";
+let significance_footnote = "<span class='footer-semi-bold'>Represents that the Indicator is identified as a <a href='https://www.epa.gov/sites/default/files/2014-10/documents/handbook-chapter2.pdf'>Designated Use</a> or Condition by the State/Territory/Tribe in the ATTAINS database.</span>";
+
 

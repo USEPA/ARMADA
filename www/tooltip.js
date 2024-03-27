@@ -6,8 +6,8 @@ let getCondEstTooltip = (d) => {
     return `<strong>${d['Indicator']} | ${d['Condition']} | ${d['Subpopulation']}</strong><br>
             ${tip_format(d['T1.P.Estimate'])}% 
             (${tip_format(d['T1.LCB'])} to ${tip_format(d['T1.UCB'])}% @ ${tip_format(d['confidenceLevel'])}% confidence level) <hr style="margin: 10px;">
-           <em> Explanation: In ${d['T1_Year']}, ${tip_format(d['T1.P.Estimate'])}% of ${d['Resource']} resources were in ${d['Condition']} category for ${d['Indicator']}. The confidence interval for this estimate is ${tip_format(d['T1.LCB'])}% to ${tip_format(d['T1.UCB'])}%.</em>  <hr style="margin: 10px;">
-           ${d['commentText']}`;
+           <em> Explanation: In ${d['T1_Year']}, ${tip_format(d['T1.P.Estimate'])}% of ${d['Resource']} resources (${formatNumber(d['Condition_Size'])} of ${formatNumber(d['Survey_Size'])} ${d['Units']}) were in ${d['Condition']} category for ${d['Indicator']}. The confidence interval for this estimate is ${tip_format(d['T1.LCB'])}% to ${tip_format(d['T1.UCB'])}% (${formatNumber(d['T1.LCB_Size'])} to ${formatNumber(d['T1.UCB_Size'])} ${d['Units']}). The sample size supporting this estimate was ${d['siteNumber']} sites.</em>  <hr style="margin: 10px;">
+${d['commentText']}`;
 }
 //${d['commentText']}
 let getChangeTooltip = (d) => {
@@ -77,23 +77,23 @@ let tooltip = (selectionGroup, tooltipDiv, view) => {
         tooltipDiv
             .style(
                 "top",
-                mouseY < options.height / 2 ? `${mouseY * shrink_ratio + MOUSE_POS_OFFSET}px` : "initial"
+                mouseY < options.height / 2 ? 
+                `${mouseY * shrink_ratio + MOUSE_POS_OFFSET}px` : "initial"
             )
             .style(
                 "right",
                 mouseX >= width / 2 ?
-                `${width - mouseX * shrink_ratio + MOUSE_POS_OFFSET}px` :
-                "initial"
+                `${width - mouseX * shrink_ratio + MOUSE_POS_OFFSET}px` : "initial"
             )
             .style(
                 "bottom",
                 mouseY >= options.height / 2 ?
-                `${(options.height * shrink_ratio) - (mouseY * shrink_ratio) + MOUSE_POS_OFFSET}px` :
-                "initial"
+                `${(options.height * shrink_ratio) - (mouseY * shrink_ratio) + MOUSE_POS_OFFSET}px` : "initial"
             )
             .style(
                 "left",
-                mouseX < width / 2 ? `${mouseX * shrink_ratio + MOUSE_POS_OFFSET}px` : "initial"
+                mouseX < width / 2 ? 
+                `${mouseX * shrink_ratio + MOUSE_POS_OFFSET}px` : "initial"
             );
     }
 
@@ -125,8 +125,8 @@ let tooltip = (selectionGroup, tooltipDiv, view) => {
                       } else {
                         return hideTooltip();
                       }
-                } else if (view === "cond_est comp") {
-                    return getCondEstTooltip(d);
+              //  } else if (view === "cond_est comp") {
+              //      return getCondEstTooltip(d);
                 } else if (view === "change") {
                   if(d['changeT1.P.Estimate'] !== null){
                     return getChangeTooltip(d);
