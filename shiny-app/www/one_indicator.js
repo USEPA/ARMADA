@@ -174,7 +174,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
             .ticks(null)
             .tickSize(5)
             .tickFormat(d => d + "%")
-            .tickValues([-60, -40, -20, 0, 20, 40, 60])
+            .tickValues([-80, -60, -40, -20, 0, 20, 40, 60, 80])
         )
         .call(g => g.selectAll(".domain").remove())
         .call(g =>

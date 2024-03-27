@@ -131,6 +131,11 @@ server <- function(input, output, session) {
                 selected=input$org_idcode)
   })
   
+  Data <- eventReactive(input$org_id, {
+    req(input$org_id != "" )
+    source("data_prep_trials.R", local = TRUE)$value
+  })
+  
   #### ObserveEvents----
   observeEvent(input$org_id, {
     req(input$org_id != "")
@@ -156,7 +161,7 @@ server <- function(input, output, session) {
     updateSelectInput(session,
                       "indicator",
                       choices=Data() %>% filter(Resource==input$resource_pop & 
-                                                Subpopulation==input$primary_subpop) %>% select(Indicator) %>% unique() %>% pull()
+                                                Subpopulation==input$primary_subpop) %>% select(Indicator) %>% unique() %>% pull() %>% unname()
     )
   })
   
@@ -185,10 +190,7 @@ server <- function(input, output, session) {
     })
   
   
-  Data <- eventReactive(input$org_id, {
-    req(input$org_id != "" )
-    source("data_prep_trials.R", local = TRUE)$value
-  })
+  
   
   #### Dashboard Data ----
   Dashboarddata <- eventReactive(c(input$primary_subpop, input$resource_pop, input$org_id),{
@@ -308,7 +310,7 @@ observeEvent(c(allindicator_data(), input$tabs), {
           Resource == input$resource_pop &
             Subpopulation == primary_subpop)
         
-        num_rows <- primary_subpop_data$Indicator %>% unique() %>% length()
+          num_rows <- primary_subpop_data$Indicator %>% unique() %>% length()
         if (view == "one") {
           num_rows <- primary_subpop_data$Condition %>% unique() %>% length()
         }
@@ -316,7 +318,6 @@ observeEvent(c(allindicator_data(), input$tabs), {
         dashboard_height <- (num_rows * bar_height) + margin_top + margin_bottom
         dashboard_height
       }
-      
       
       dashboard_height <- getDashboardHeight(all_indicators_data, input$primary_subpop, NA, "all")
       
@@ -332,7 +333,7 @@ observeEvent(c(allindicator_data(), input$tabs), {
       
      
       # options passed to javascript
-      options <- list(survey_comment=survey_comment, units=units, T1=T1, T2=T2, resource = input$resource_pop, primary_subpop = input$primary_subpop, comp_subpop = input$comp_subpop, condition = input$condition_category, label_format=input$label, height=dashboard_height, margin_top=margin_top, margin_bottom=margin_bottom, state=names(ORGID_choices[ORGID_choices==input$org_id]), year=year, change=names(ChangeYears()[ChangeYears()==input$changediff]))
+      options <- list(survey_comment=survey_comment, units=units, T1=T1, T2=T2, resource = input$resource_pop, primary_subpop = input$primary_subpop, condition = input$condition_category, label_format=input$label, height=dashboard_height, margin_top=margin_top, margin_bottom=margin_bottom, state=names(ORGID_choices[ORGID_choices==input$org_id]), year=year, change=names(ChangeYears()[ChangeYears()==input$changediff]))
       
       # The dashboard is written in d3.js
       # The source code is located in the all_indicators.js file (with additional dependencies)
@@ -348,11 +349,11 @@ observeEvent(c(allindicator_data(), input$tabs), {
     one_indicator_data <- oneindicator_data()
     
     if(length(grep(x = colnames(one_indicator_data), pattern = "_Year")) > 1) {
-      early_estimate <- paste0(str_sub(input$changediff, start= 3, end=4), ".P.Estimate")
-      early_year <- paste0(str_sub(input$changediff, start= 3, end=4), "_Year")
+      early_estimate <- paste0(str_sub(input$changediff, start=3, end=4), ".P.Estimate")
+      early_year <- paste0(str_sub(input$changediff, start=3, end=4), "_Year")
       #Delete when crow fixes diamond tooltip
-      early_lcb <- paste0(str_sub(input$changediff, start= 3, end=4), ".LCB")
-      early_ucb <- paste0(str_sub(input$changediff, start= 3, end=4), ".UCB")
+      early_lcb <- paste0(str_sub(input$changediff, start=3, end=4), ".LCB")
+      early_ucb <- paste0(str_sub(input$changediff, start=3, end=4), ".UCB")
       
       one_indicator_data <- one_indicator_data %>%
         rename(T1T2_DIFF.P = input$changediff,
@@ -373,10 +374,10 @@ observeEvent(c(allindicator_data(), input$tabs), {
     year <- one_indicator_data %>% select(T1_Year) %>% unique() %>% pull()
     units <- one_indicator_data %>% select(Units) %>% unique() %>% pull()
     
-    margin_top <- if(nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 75 &
+    margin_top <- if(nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 76 &
                      nchar(paste0(input$indicator, " | ", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) > 116){
       190
-    } else if(nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 75 &
+    } else if(nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 76 &
               nchar(paste0(input$indicator, " | ", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) <= 116){
       120 
     } else{
@@ -386,9 +387,9 @@ observeEvent(c(allindicator_data(), input$tabs), {
     getDashboardHeight <- function(data, primary_subpop, indicator, view) {
       primary_subpop_data <- data %>% dplyr::filter(
         Resource == input$resource_pop &
-          Subpopulation == primary_subpop)
+        Subpopulation == primary_subpop)
       
-      num_rows <- primary_subpop_data$Indicator %>% unique() %>% length()
+        num_rows <- primary_subpop_data$Indicator %>% unique() %>% length()
       if (view == "one") {
         num_rows <- primary_subpop_data$Condition %>% unique() %>% length()
       }
@@ -412,7 +413,7 @@ observeEvent(c(allindicator_data(), input$tabs), {
                                                                                                        TRUE ~ str_c(Indicator))) %>% select(use_label) %>% unique() %>% pull()
      
     # options passed to javascript
-    options <- list(use=use, survey_comment=survey_comment, units=units,T1=T1, T2=T2, resource = input$resource_pop, primary_subpop = input$primary_subpop, comp_subpop = input$comp_subpop, indicator = input$indicator, label_format=input$label, height=dashboard_height, margin_top=margin_top, margin_bottom=margin_bottom, state=names(ORGID_choices[ORGID_choices==input$org_id]), year=year, change=names(ChangeYears()[ChangeYears()==input$changediff]))
+    options <- list(use=use, survey_comment=survey_comment, units=units,T1=T1, T2=T2, resource = input$resource_pop, primary_subpop = input$primary_subpop, indicator = input$indicator, label_format=input$label, height=dashboard_height, margin_top=margin_top, margin_bottom=margin_bottom, state=names(ORGID_choices[ORGID_choices==input$org_id]), year=year, change=names(ChangeYears()[ChangeYears()==input$changediff]))
     
     # The dashboard is written in d3.js
     # The source code is located in the one_indicator.js file (with additional dependencies)

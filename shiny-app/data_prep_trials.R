@@ -15,7 +15,7 @@
 #
 # 
 # 
-#url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=21KAN001")
+#url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=AKDECWQ")
 # ATTAINS API ----
 # Connect to ATTAINS database and pull survey data by Organization ID 
 
@@ -44,7 +44,7 @@ subpop <- pluck(df$subPopulationCode)
 year <- pluck(df$Year)
 units <- pluck(df$unitCode)
 survey_comment <- df %>% mutate(Year=as.numeric(Year)) %>% filter(Year==max(Year)) %>%
-  select(T1_Year=Year, Resource=waterTypeGroupCode, Subpopulation=subPopulationCode, Units=unitCode, survey_comment=surveyWaterGroupCommentText) %>%
+  select(T1_Year=Year, Resource=waterTypeGroupCode, Subpopulation=subPopulationCode, Units=unitCode, Survey_Size=size, siteNumber, survey_comment=surveyWaterGroupCommentText) %>%
   #remove_rownames() %>% 
   pluck()
 row.names(survey_comment) <- NULL
@@ -145,14 +145,19 @@ all_surveys <- all_surveys %>%
   #adding comments and a sort dummy variable to put Designated use estimates below stressors and OVERALL at bottom of dashboard
   mutate(commentText = if_else(is.na(commentText),"",commentText),
          survey_comment = if_else(is.na(survey_comment ),"",survey_comment),
-         USEsort = case_when(surveyUseCode==Indicator ~ "B",
-                          TRUE ~ "A"),
+         USEsort = case_when(#str_detect(Indicator, "CONDITION|Condition|condition") ~ "A",
+                             surveyUseCode==Indicator ~ "B",
+                             TRUE ~ "A"),
          OVERALLsort = case_when(str_detect(Indicator, "OVERALL|Overall|overall") ~ "Z",
                              TRUE ~ "A")) %>%
   #This will remove columns if past surveys were different than current surveys
   #select_if(~any(!is.na(.))) %>%
   mutate_at(vars(contains("UCB")), ~ifelse((.>100), 100, .)) %>%
   mutate_at(vars(contains("LCB")), ~ifelse((.<0), 0, .)) %>%
+  mutate(Condition_Size =  round(Survey_Size*(T1.P.Estimate*0.01),0),
+        T1.LCB_Size = round(Survey_Size*(T1.LCB*0.01),0),
+        T1.UCB_Size = round(Survey_Size*(T1.UCB*0.01),0),
+        Survey_Size = round(Survey_Size,0)) %>%
   #Cleans and orders indicators, conditions and resources
   mutate(Indicator = case_when(Indicator %in% c("pH", "PH") ~ "pH",
                                TRUE ~ str_to_title(Indicator)),

@@ -56,9 +56,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
             .data(primary_data)
             .call(wrap, margin.left)
             .attr('dx', '-.5em')
-           // .attr("y", -8)
-           // .attr("y", i => (getComputedTextLength(primary_data[i].Indicator) > 30)? -7 : 0)
-         //   .call(tooltip, tooltipDiv, "indicator")
+        //    .call(tooltip, tooltipDiv, "indicator")
         )
 
 

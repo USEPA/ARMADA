@@ -89,7 +89,8 @@ controlPanel <- function() {
         helper(type = "inline",
                icon = "circle-question",
                title = "Change Comparison",
-               content = c("Often States/Territories/Tribes have collected data over numerous years. Use the input to compare the results across available years."),
+               content = c("Often States/Territories/Tribes have collected data over numerous years. Use the input to compare the results across available years. <b>Please note
+                           that the years shown are the years data was reported and not necessarily the collection year.</b>"),
                size = "s", easyClose = TRUE, fade = TRUE),
       tags$head(tags$style(HTML("#label ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
       selectInput("label",
