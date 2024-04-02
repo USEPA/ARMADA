@@ -12,6 +12,16 @@
     border-color: #4cae4c;
 }
 
+.sweet-alert .sa-icon.sa-custom {background-position: top !important;
+                                 top: 100%;
+}
+
+.sweet-alert {
+    max-height: calc(100% - 20px);
+    overflow-y: auto;
+    overflow-x: auto !important;
+}
+
 #custom {
   padding-bottom: 50px;
 }
