@@ -192,7 +192,7 @@ function createFooter(svg, options) {
       .attr("text-anchor", "left")
       .attr("x", 0)
       .attr("y", options.height - margin.bottom + footnote_top_padding + footer_line_height)
-      .text(`<br>${options.survey_comment}<br><hr><span class='footer-semi-bold'>About the Dashboard</span>: This dashboard displays statistical survey results which provide an overall picture of water quality condition across a State/Territory/Tribe. From left to right, the graphs display the percentage of aquatic resources in different conditions for the most recent survey year available and a change comparison from the selected survey years. Please note that the years shown are the years survey data was reported and not necessarily the collection year. Explore different resource types, subpopulations, condition categories and survey years by using the dropdowns on the right. Hover over a result to see more information and an explanation of the results. For national survey data and results, please visit <a href='https://www.epa.gov/national-aquatic-resource-surveys' target='_blank'>EPA’s webpage for the National Aquatic Resource Surveys</a>.</span>`);
+      .text(`<br><span class='footer-semi-bold'>About the Data</span>: ${options.survey_comment}<br><hr><span class='footer-semi-bold'>About the Dashboard</span>: This dashboard displays statistical survey results which provide an overall picture of water quality condition across a State/Territory/Tribe. From left to right, the graphs display the percentage of aquatic resources in different conditions for the most recent survey year available and a change comparison from the selected survey years. Please note that the years shown are the years survey data was reported and not necessarily the collection year. Explore different resource types, subpopulations, condition categories and survey years by using the dropdowns on the right. Hover over a result to see more information and an explanation of the results. For national survey data and results, please visit <a href='https://www.epa.gov/national-aquatic-resource-surveys' target='_blank'>EPA’s webpage for the National Aquatic Resource Surveys</a>.</span>`);
 
    	let wrap = d3.textwrap().bounds({height: margin.bottom - footnote_top_padding, width: dashboard_width - asterisk_offset})
    	svg.selectAll('.footer text').call(wrap);
@@ -203,10 +203,19 @@ function createFooter(svg, options) {
 function createTitle(view, options) { // primary_subpop, comparison_subpop, condition, indicator) {
   // options.primary_subpop, options.comp_subpop, options.condition, nul
 	let header = svg.append("g").attr("class", "header");
-
-	let title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>${options.primary_subpop} Estimates and ${options.change}`;
+	let change_header = options.change
+	 
+    title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>${options.primary_subpop} Estimates and ${options.change}`;
+  
+  if(change_header === "No Change Available"){
+    title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>${options.primary_subpop} Estimates`;
+  }
+    
 	if (view === "one") {
 		title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | ${options.primary_subpop} Estimates and ${options.change}`;
+		if(change_header === "No Change Available"){
+    title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | ${options.primary_subpop} Estimates`;
+    }
 	}
 //<span style="color:blue">
    	header.append("text")

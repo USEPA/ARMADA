@@ -44,6 +44,6 @@ let ci_bar_height = 2;
 let control_bar_height_str = d3.select(".controls-container").style("height");
 let control_bar_height = parseFloat(control_bar_height_str.substring(0, control_bar_height_str.length - 2));
 
-let significance_footnote = "<span class='footer-semi-bold'>Represents that the Indicator is identified as a <a href='https://www.epa.gov/sites/default/files/2014-10/documents/handbook-chapter2.pdf' target='_blank'>Designated Use</a> or <a href='https://www.epa.gov/sites/default/files/2018-10/documents/biological-assessments-criteria-crucial-components.pdf' target='_blank'>Ecological Assessment</a> by the State/Territory/Tribe in the ATTAINS database.</span>";
+let significance_footnote = "<span class='footer-semi-bold'>Represents that the Indicator is identified as a <a href='https://www.epa.gov/sites/default/files/2014-10/documents/handbook-chapter2.pdf' target='_blank'>Designated Use</a> or <a href='https://www.epa.gov/sites/default/files/2018-10/documents/biological-assessments-criteria-crucial-components.pdf' target='_blank'>Ecological Assessment</a> by the State/Territory/Tribe.</span>";
 
 

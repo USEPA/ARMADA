@@ -19,7 +19,7 @@ ui <-  tagList(
     id="custom",
       navbarPage(
         title=span("Water Quality Dashboard", 
-                   style = "font-weight: bold; font-size: 40px;"),
+                   style = "font-weight: bold; font-size: 40px; text-align: center;"),
         collapsible=TRUE,
         fluid=FALSE,
         id="tabs",
@@ -32,11 +32,11 @@ ui <-  tagList(
                            c("Select State/Territory/Tribe"="", ORGID)
                ),
                column(12, align="left",
-                      "Section 305(b) of the Federal Clean Water Act (CWA) requires each State to monitor, assess and report on the quality of its waters relative to
+                      "Section 305(b) of the Federal Clean Water Act requires each State to monitor, assess and report on the quality of its waters relative to
             designated uses established in accordance with state defined water quality standards. The data illustrated in the dashboard were collected using 
-            statistically-valid surveys, which allows states to extrapolate the results from the sample sites to the broader population of aquatic resources. 
+            statistically-valid surveys which allows states to extrapolate the results from the sample sites to the broader population of aquatic resources. 
             Information presented are intended to assist states and the public to track progress in addressing water pollution, identify trends over time, recognize emerging problems 
-            and determine effectiveness of water management programs."
+            and determine effectiveness of water management programs. These information are publicly available and accessed through the", tags$a(href='https://www.epa.gov/waterdata/attains', "ATTAINS database.", target="blank")
             )
           )
         ),
@@ -323,6 +323,10 @@ observeEvent(c(allindicator_data(), input$tabs), {
       
       survey_comment <- all_indicators_data %>% select(survey_comment) %>% unique() %>% pull()
       
+      if(survey_comment==""){
+        survey_comment <- "No comments available from State/Territory/Tribe."
+      }
+      
       if(input$changediff != "Only One Year Available"){
         T1 <- str_sub(names(ChangeYears()[ChangeYears()==input$changediff]), start= 15, end=16)
         T2 <- str_sub(names(ChangeYears()[ChangeYears()==input$changediff]), start= 23, end=24)
@@ -400,6 +404,10 @@ observeEvent(c(allindicator_data(), input$tabs), {
     dashboard_height <- getDashboardHeight(one_indicator_data, input$primary_subpop, input$indicator, "one")
     
     survey_comment <- one_indicator_data %>% select(survey_comment) %>% unique() %>% pull()
+    if(survey_comment==""){
+      survey_comment <- "No comments available from State/Territory/Tribe."
+    }
+    
     if(input$changediff != "Only One Year Available"){
       T1 <- str_sub(names(ChangeYears()[ChangeYears()==input$changediff]), start= 15, end=16)
       T2 <- str_sub(names(ChangeYears()[ChangeYears()==input$changediff]), start= 23, end=24)
