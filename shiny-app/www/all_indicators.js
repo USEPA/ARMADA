@@ -94,8 +94,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
             .tickValues([0, 20, 40, 60, 80, 100])
         )
         .call(g => g.select(".domain").remove())
-        .call(g =>
-            g
+        .call(g => g
             .selectAll(".tick line")
             .clone()
             .attr("stroke-opacity", default_stroke_opacity)
@@ -103,8 +102,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
             .attr("y2", options.height - margin.top - margin.bottom - outer_padding_bottom)
         )
         // Clone again to create left border and right border
-        .call(g =>
-            g
+        .call(g => g
             .selectAll(".tick line")
             .clone()
             .attr("stroke-opacity", (d, i) => [0, 1, 2, 3].includes(i) ? .9 : 0.0)
@@ -198,8 +196,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
             .tickValues([-80, -60, -40, -20, 0, 20, 40, 60, 80])
         )
         .call(g => g.selectAll(".domain").remove())
-        .call(g =>
-            g
+        .call(g => g
             .selectAll(".tick line")
             .clone()
             .attr("stroke-opacity", default_stroke_opacity)
@@ -276,10 +273,18 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .call(tooltip, tooltipDiv, "cond_est");
 
     let letter_width = 4.5;
-    let label_x_offset = 11;
+    let label_x_offset;
+          if(options.label_format === "Confidence Intervals") {
+              label_x_offset = 4;
+          } else {
+              label_x_offset = 11;
+          }
+  
+    //g => (options.label_format === "Point Estimate")? '11' : '8');
     svg.append("g")
         .attr("text-anchor", "end")
-        .attr("font-size", ".7rem")
+        .attr('font-size', i => (options.label_format === "Point Estimate")? '.7rem' : '.6rem')
+        //.attr("font-size", ".7rem")
         //.style('font-weight','bold')
         .selectAll("text")
         .data(primary_data)
