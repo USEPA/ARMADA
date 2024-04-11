@@ -256,11 +256,16 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .call(tooltip, tooltipDiv, "cond_est");
 
     let letter_width = 4.5;
-    let label_x_offset = 11;
+    let label_x_offset;
+          if(options.label_format === "Confidence Intervals") {
+              label_x_offset = 4;
+          } else {
+              label_x_offset = 11;
+          }
     svg.append("g")
         .attr("text-anchor", "end")
         .attr("font-family", "sans-serif")
-        .attr("font-size", ".7rem")
+        .attr('font-size', i => (options.label_format === "Point Estimate")? '.7rem' : '.6rem')
       //  .style('font-weight','bold')
         .selectAll("text")
         .data(primary_data)
