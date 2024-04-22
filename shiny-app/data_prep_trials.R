@@ -25,6 +25,7 @@ json <- fromJSON(rawToChar(res$content))
 data <- json$items
 
 shiny::validate(
+  need(!("msg" %in% colnames(json)), 'The request could not be completed due to an internal server error.'),
   need(length(data)!=0, 'Data Not Available for State/Territory/Tribe.')
 )
 
@@ -67,7 +68,10 @@ df3 <- as.data.frame(do.call(rbind, lapply(df2 , as.data.frame))) %>%
   arrange(desc(Year), Resource, stressor) %>%
   select(-statistic, -marginOfError) %>%
   rename(Indicator=stressor,
-         Condition=surveyCategoryCode)
+         Condition=surveyCategoryCode) %>%
+  mutate(Indicator = case_when(Indicator %in% c("Benthic Macroinvertebrate Bioassessment", "BENTHIC MACROINVERTEBRATES BIOASSESSMENTS", 
+                                                "Benthic Macroinvertebrate", "BENTHIC MACROINVERTEBRATE") ~ "BENTHIC MACROINVERTEBRATES",
+                               TRUE ~ Indicator))
 
 row.names(df3 ) <- NULL
 # Current Surveys----
@@ -141,6 +145,7 @@ for(i in 2:length(grep(x = colnames(all_surveys), pattern = ".P.Estimate"))) {
 
 all_surveys <- all_surveys %>%
   left_join(survey_comment, by = join_by(T1_Year, Resource, Subpopulation, Units)) %>%
+  arrange(desc(T1_Year), factor(Subpopulation, levels = c("Statewide"))) %>%
   mutate(Subpopulation = paste0(Subpopulation," (",Units,")")) %>%
   #adding comments and a sort dummy variable to put Designated use estimates below stressors and OVERALL at bottom of dashboard
   mutate(commentText = if_else(is.na(commentText),"",commentText),
@@ -165,7 +170,7 @@ all_surveys <- all_surveys %>%
          Resource = str_to_title(Resource)) %>%
   mutate(Indicator = case_when(str_detect(Indicator, "[)]") & USEsort=="A" ~ myCap.2(Indicator),
                                TRUE ~ Indicator)) %>%
-  arrange(OVERALLsort, Subpopulation, surveyUseCode, desc(USEsort)) %>%
+  arrange(OVERALLsort, surveyUseCode, desc(USEsort)) %>%
   arrange(factor(Condition, levels = condition_levels))
   
 remove_modal_spinner()

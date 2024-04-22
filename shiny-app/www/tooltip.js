@@ -3,13 +3,20 @@ let getIndicatorTooltip = (d) => {
 }
 
 let getCondEstTooltip = (d) => {
-    return `<strong>${d['Indicator']} | ${d['Condition']} | ${d['Subpopulation']}</strong><br>
+    return `<strong>${d['T1_Year']} | ${d['Indicator']} | ${d['Condition']} | ${d['Subpopulation']}</strong><br>
             ${tip_format(d['T1.P.Estimate'])}% 
             (${tip_format(d['T1.LCB'])} to ${tip_format(d['T1.UCB'])}% @ ${tip_format(d['confidenceLevel'])}% confidence level) <hr style="margin: 10px;">
            <em> Explanation: In ${d['T1_Year']}, ${tip_format(d['T1.P.Estimate'])}% of ${d['Resource']} resources (${formatNumber(d['Condition_Size'])} of ${formatNumber(d['Survey_Size'])} ${d['Units']}) were in ${d['Condition']} category for ${d['Indicator']}. The confidence interval for this estimate is ${tip_format(d['T1.LCB'])}% to ${tip_format(d['T1.UCB'])}% (${formatNumber(d['T1.LCB_Size'])} to ${formatNumber(d['T1.UCB_Size'])} ${d['Units']}). The sample size supporting this estimate was ${d['siteNumber']} sites.</em>  <hr style="margin: 10px;">
 ${d['commentText']}`;
 }
-//${d['commentText']}
+
+let getCondEstCompTooltip = (d) => {
+    return `<strong>${d['T1_Year']} | ${d['Indicator']} | ${d['Condition']} | ${d['Subpopulation']}</strong><br>
+            ${tip_format(d['T1.P.Estimate'])}% 
+            (${tip_format(d['T1.LCB'])} to ${tip_format(d['T1.UCB'])}% @ ${tip_format(d['confidenceLevel'])}% confidence level) <hr style="margin: 10px;">
+           <em> Explanation: In ${d['T1_Year']}, ${tip_format(d['T1.P.Estimate'])}% of ${d['Resource']} resources (${formatNumber(d['Condition_Size'])} of ${formatNumber(d['Survey_Size'])} ${d['Units']}) were in ${d['Condition']} category for ${d['Indicator']}. The confidence interval for this estimate is ${tip_format(d['T1.LCB'])}% to ${tip_format(d['T1.UCB'])}% (${formatNumber(d['T1.LCB_Size'])} to ${formatNumber(d['T1.UCB_Size'])} ${d['Units']}). The sample size supporting this estimate was ${d['siteNumber']} sites.</em>`;
+}
+
 let getChangeTooltip = (d) => {
     return `<strong>${d['Indicator']} | ${d['Condition']} | ${d['Subpopulation']}</strong><br>
             <strong>${d['Early_Year']}:</strong> ${tip_format(d['Early.P.Estimate'])}% 
@@ -64,7 +71,7 @@ let tooltip = (selectionGroup, tooltipDiv, view) => {
     function showTooltip(view) {
 
         tooltipDiv
-            .style("background-color", view === "cond_est comp"? "lightgray": "white")
+            .style("background-color", view === "cond_est comp"? "#eee": "white")
             .style("display", "block");
     }
 
@@ -125,8 +132,8 @@ let tooltip = (selectionGroup, tooltipDiv, view) => {
                       } else {
                         return hideTooltip();
                       }
-              //  } else if (view === "cond_est comp") {
-              //      return getCondEstTooltip(d);
+                } else if (view === "cond_est comp") {
+                    return getCondEstCompTooltip(d);
                 } else if (view === "change") {
                   if(d['changeT1.P.Estimate'] !== null){
                     return getChangeTooltip(d);
