@@ -9,6 +9,7 @@ const tooltipDiv = d3.select(".active .tooltip");
 r2d3.onRender(function(data, svg, width, height, options) {
     
     let dash_label = "Condition"
+    let margin_top = options.margin_top
     let resource = options.resource
     let units = options.units
     let T1 = options.T1
@@ -19,7 +20,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
     let primary_data = data.filter(d => d["Subpopulation"] === options.primary_subpop);
     let primary_categories = primary_data.map(d => d["Condition"]);
 
-  //  let comp_data = data.filter(d => d["Subpopulation"] === options.comp_subpop && primary_categories.includes(d["Condition"]));
+    let comp_data = data.filter(d => d["Subpopulation"] === options.comp_subpop && primary_categories.includes(d["Condition"]));
 
     /*********************************************
      * Condition Estimates Axes and Ranges
@@ -28,7 +29,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
     let y_cond_est_padding = 0.5
     let y_cond_est = d3.scaleBand()
         .domain(d3.range(primary_data.length))
-        .rangeRound([margin.top, options.height - margin.bottom])
+        .rangeRound([margin_top, options.height - margin.bottom])
         .paddingInner(y_cond_est_padding)
         .paddingOuter(y_cond_est_padding / 2.0);
 
@@ -64,7 +65,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
         );
 
     let x_axis_cond_est = g => g
-        .attr("transform", `translate(0,${margin.top})`)
+        .attr("transform", `translate(0,${margin_top})`)
         .style("font-size", small_font_size)
         .style("color", light_text_color)
         .style('font-weight','bold')
@@ -81,7 +82,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
             .clone()
             .attr("stroke-opacity", default_stroke_opacity)
             .attr("stroke", stroke_color)
-            .attr("y2", options.height - margin.top - margin.bottom - outer_padding_bottom)
+            .attr("y2", options.height - margin_top - margin.bottom - outer_padding_bottom)
         )
         // Clone again to create left border and right border
         .call(g =>
@@ -90,7 +91,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
             .clone()
             .attr("stroke-opacity", (d, i) => [0, 1, 2, 3].includes(i) ? .9 : 0.0)
             .attr("stroke", stroke_color)
-            .attr("y2", options.height - margin.top - margin.bottom - outer_padding_bottom)
+            .attr("y2", options.height - margin_top - margin.bottom - outer_padding_bottom)
             .attr("y1", outer_padding_top)
             .attr("transform", function(d, i) {
             	 if (i === 0) {
@@ -146,7 +147,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
         );
 
     let x_axis_change = g => g
-        .attr("transform", `translate(0,${margin.top})`)
+        .attr("transform", `translate(0,${margin_top})`)
         .style("font-size", esmall_font_size)
         .style("color", light_text_color)
         //.style("color", change_color)
@@ -166,7 +167,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .rangeRound([margin.left + cond_est_width + change_width, dashboard_width - margin.right]);
 
     let x_axis_long_term_change = g => g
-        .attr("transform", `translate(0,${margin.top})`)
+        .attr("transform", `translate(0,${margin_top})`)
         .style("font-size", small_font_size)
         .style("color", light_text_color)
         .style('font-weight','bold')
@@ -183,7 +184,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
             .clone()
             .attr("stroke-opacity", default_stroke_opacity)
             .attr("stroke", stroke_color)
-            .attr("y2", options.height - margin.top - margin.bottom - outer_padding_bottom)
+            .attr("y2", options.height - margin_top - margin.bottom - outer_padding_bottom)
             .attr("stroke-opacity", (d, i) => i === 4 ? heavy_stroke_opacity : default_stroke_opacity)
         );
 
@@ -200,7 +201,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
      * Create Dashboard Axis Bar and Footer
      *********************************************/
 
-    createDashAxisBar(svg, dashboard_width, x_cond_est, x_long_term_change, dash_label, change, units);
+    createDashAxisBar(svg, dashboard_width, margin_top, x_cond_est, x_long_term_change, dash_label, change, units);
     createTitle("one", options);
     createFooter(svg, options);
  //   createWatermark(svg);
@@ -217,19 +218,19 @@ r2d3.onRender(function(data, svg, width, height, options) {
 
     cond_est_g = svg.append("g");
 
-   // cond_est_g.selectAll(".cond-est-ci-bar-comp-subpop")
-   //     .data(comp_data)
-   //     .enter()
-    //    .append("line")
-    //    .attr("x1", (d) => x_cond_est(+d["T1.LCB"]))
-    //    .attr("x2", (d) => x_cond_est(+d["T1.UCB"]))
-     //   .attr("y1", (d, i) => y_cond_est(i) + y_cond_est.bandwidth()/2.0)
-     //   .attr("y2", (d, i) => y_cond_est(i) + y_cond_est.bandwidth()/2.0)
-      //  .attr("stroke", "gray")
-      //  .attr("stroke-opacity", default_stroke_opacity)
-     //   .style("opacity", default_stroke_opacity)
-     //   .attr("stroke-width", 25)
-     //   .call(tooltip, tooltipDiv, "cond_est comp");
+    cond_est_g.selectAll(".cond-est-ci-bar-comp-subpop")
+        .data(comp_data)
+        .enter()
+        .append("line")
+        .attr("x1", (d) => x_cond_est(+d["T1.LCB"]))
+        .attr("x2", (d) => x_cond_est(+d["T1.UCB"]))
+        .attr("y1", (d, i) => y_cond_est(i) + y_cond_est.bandwidth()/2.0)
+        .attr("y2", (d, i) => y_cond_est(i) + y_cond_est.bandwidth()/2.0)
+        .attr("stroke", "grey")
+        .attr("stroke-opacity", default_stroke_opacity)
+        .style("opacity", default_stroke_opacity)
+        .attr("stroke-width", 25)
+        .call(tooltip, tooltipDiv, "cond_est comp");
 
     cond_est_g
         .selectAll("rect")

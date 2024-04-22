@@ -42,15 +42,29 @@ controlPanel <- function() {
                size = "s", easyClose = TRUE, fade = TRUE),
       tags$head(tags$style(HTML("#primary_subpop ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
       selectInput("primary_subpop",
-                  span("Select a Subpopulation", 
+                  span("Select a Population", 
                        style = "font-weight: bold; font-size: 16px"),
                   choices = "") %>%
         #Subpopulation helper
         helper(type = "inline",
                icon = "circle-question",
-               title = "Subpopulation",
-               content = c("Ocassionally, State/Territories/Tribes will sample smaller scale areas rather than statewide. Explore water quality conditions across Subpopulations, if available."),
+               title = "Population",
+               content = c("Explore water quality conditions across Populations, if available."),
                size = "s", easyClose = TRUE, fade = TRUE),
+      conditionalPanel(
+        condition = "output.comp_exists=='TRUE'",
+        tags$head(tags$style(HTML("#comp_subpop ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
+        selectInput("comp_subpop",
+                    span("Select a Comparison Population", 
+                         style = "font-weight: bold; font-size: 16px"),
+                    choices = "") %>%
+          #Comparison Subpopulation helper
+          helper(type = "inline",
+                 icon = "circle-question",
+                 title = "Comparision Population",
+                 content = c("State/Territories/Tribes may sample other Populations rather than statewide. Users can compare water quality conditions across Populations."),
+                 size = "s", easyClose = TRUE, fade = TRUE),
+      ),
       conditionalPanel(
         condition = "input.tabs == 'all_indicator'",
         tags$head(tags$style(HTML("#condition_category ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
@@ -80,6 +94,9 @@ controlPanel <- function() {
                  size = "s", easyClose = TRUE, fade = TRUE)
       ),
       uiOutput('background_change'),
+      uiOutput('comp_background'),
+      conditionalPanel(
+        condition = "input.changediff != 'Only One Year Available'",
       tags$head(tags$style(HTML("#changediff ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
       selectInput("changediff",
                   span("Select Change Comparison", 
@@ -91,7 +108,9 @@ controlPanel <- function() {
                title = "Change Comparison",
                content = c("Often States/Territories/Tribes have collected data over numerous years. Use the input to compare the results across available years. <b>Please note
                            that the years shown are the years data was reported and not necessarily the collection year.</b>"),
-               size = "s", easyClose = TRUE, fade = TRUE),
+               size = "s", easyClose = TRUE, fade = TRUE)
+      ),
+      
       tags$head(tags$style(HTML("#label ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
       selectInput("label",
                   span("Select Label Options", 

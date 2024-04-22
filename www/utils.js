@@ -98,7 +98,7 @@ function getLabel(label_format, d) {
 }
 
 
-function createDashAxisBar(svg, width, x_cond_est, x_long_term_change, cond_est_header, change, units) {
+function createDashAxisBar(svg, width, margin_top, x_cond_est, x_long_term_change, cond_est_header, change, units) {
     
     
     let dash_axis_bar = svg.append("g")
@@ -106,7 +106,7 @@ function createDashAxisBar(svg, width, x_cond_est, x_long_term_change, cond_est_
    		.attr("font-size", `15px`)
    		.attr("font-weight", "bold");
     
-    let dash_axis_y = margin.top - (dash_axis_bar_height*2);
+    let dash_axis_y = margin_top - (dash_axis_bar_height*2);
     let dash_axis_text_y = (dash_axis_bar_height - 10) + dash_axis_y;
 
     dash_axis_bar.append("rect")
@@ -204,19 +204,38 @@ function createTitle(view, options) { // primary_subpop, comparison_subpop, cond
   // options.primary_subpop, options.comp_subpop, options.condition, nul
 	let header = svg.append("g").attr("class", "header");
 	let change_header = options.change
-	 
+	let comp_subpop = options.comp_subpop
+	let comp_exists = options.comp_exists
+	let margin_top = options.margin_top
+	
+	
+if(view === "all") {	 
     title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>${options.primary_subpop} Estimates and ${options.change}`;
+    if(comp_exists === "TRUE" & comp_subpop !== "None"){
+      title = `<h1>${options.state} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>Comparison: ${options.year} ${options.primary_subpop} Estimates and ${options.change} | <span style="color:grey">${options.comp_year} ${options.comp_subpop} Estimates</span>`;
+    }
   
   if(change_header === "No Change Available"){
     title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>${options.primary_subpop} Estimates`;
+    if(comp_exists === "TRUE" & comp_subpop !== "None"){
+      title = `<h1>${options.state} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>Comparison: ${options.year} ${options.primary_subpop} Estimates | <span style="color:grey">${options.comp_year} ${options.comp_subpop} Estimates</span>`;
+    }
   }
+}
     
-	if (view === "one") {
+	if(view === "one") {
 		title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | ${options.primary_subpop} Estimates and ${options.change}`;
+		if(comp_exists === "TRUE" & comp_subpop !== "None"){
+      title = `<h1>${options.state} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | Comparison: ${options.year} ${options.primary_subpop} Estimates and ${options.change} | <span style="color:grey">${options.comp_year} ${options.comp_subpop} Estimates</span>`;
+    }
 		if(change_header === "No Change Available"){
-    title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | ${options.primary_subpop} Estimates`;
+      title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | ${options.primary_subpop} Estimates`;
+    if(comp_exists === "TRUE" & comp_subpop !== "None"){
+      title = `<h1>${options.state} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | Comparison:  ${options.year} ${options.primary_subpop} Estimates | <span style="color:grey">${options.comp_year} ${options.comp_subpop} Estimates</span>`;
     }
 	}
+}
+
 //<span style="color:blue">
    	header.append("text")
    		.attr("text-anchor", "left")
@@ -224,7 +243,7 @@ function createTitle(view, options) { // primary_subpop, comparison_subpop, cond
    		.attr("y", 0)
    		.text(title);
 
-   	let wrap = d3.textwrap().bounds({height: margin.top, width: dashboard_width})
+   	let wrap = d3.textwrap().bounds({height: margin_top, width: dashboard_width})
    	svg.selectAll('.header text').call(wrap);
 
 }
