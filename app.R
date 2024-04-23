@@ -211,17 +211,26 @@ server <- function(input, output, session) {
   
   output$comp_exists <- eventReactive(c(allindicators_data(), oneindicator_data(), input$indicator),{
     req(Data())
-    primary_all <- Data() %>% filter(Resource==input$resource_pop & Subpopulation == input$primary_subpop & Condition==input$condition_category) %>% 
+    primary_all_Ind <- Data() %>% filter(Resource==input$resource_pop & Subpopulation == input$primary_subpop & Condition==input$condition_category) %>% 
       select(Indicator) %>% unique() %>% pull() %>% unname()
-    secondary_all <-  Data() %>% filter(Resource==input$resource_pop & Subpopulation != input$primary_subpop & Condition==input$condition_category) %>% 
+    secondary_all_Ind <-  Data() %>% filter(Resource==input$resource_pop & Subpopulation != input$primary_subpop & Condition==input$condition_category) %>% 
       select(Indicator) %>% unique() %>% pull() %>% unname()
+    primary_all_Cond <- Data() %>% filter(Resource==input$resource_pop & Subpopulation == input$primary_subpop & Condition==input$condition_category) %>% 
+      select(Condition) %>% unique() %>% pull() %>% unname()
+    secondary_all_Cond <-  Data() %>% filter(Resource==input$resource_pop & Subpopulation != input$primary_subpop & Condition==input$condition_category) %>% 
+      select(Condition) %>% unique() %>% pull() %>% unname()
     
-    primary_one <- Data() %>% filter(Resource==input$resource_pop & Subpopulation == input$primary_subpop & Indicator == input$indicator) %>% 
+    primary_one_Ind <- Data() %>% filter(Resource==input$resource_pop & Subpopulation == input$primary_subpop & Indicator == input$indicator) %>% 
       select(Indicator) %>% unique() %>% pull() %>% unname()
-    secondary_one <-  Data() %>% filter(Resource==input$resource_pop & Subpopulation != input$primary_subpop & Indicator == input$indicator) %>% 
+    secondary_one_Ind <-  Data() %>% filter(Resource==input$resource_pop & Subpopulation != input$primary_subpop & Indicator == input$indicator) %>% 
       select(Indicator) %>% unique() %>% pull() %>% unname()
+    primary_one_Cond <- Data() %>% filter(Resource==input$resource_pop & Subpopulation == input$primary_subpop & Indicator == input$indicator) %>% 
+      select(Condition) %>% unique() %>% pull() %>% unname()
+    secondary_one_Cond <-  Data() %>% filter(Resource==input$resource_pop & Subpopulation != input$primary_subpop & Indicator == input$indicator) %>% 
+      select(Condition) %>% unique() %>% pull() %>% unname()
     
-    if(input$tabs == "all_indicator" & length(intersect(primary_all, secondary_all)) > 0 | input$tabs == "one_indicator" & length(intersect(primary_one, secondary_one)) > 0){
+    if(input$tabs == "all_indicator" & length(intersect(primary_all_Ind, secondary_all_Ind)) > 0 & length(intersect(primary_all_Cond, secondary_all_Cond)) > 0 | 
+       input$tabs == "one_indicator" & length(intersect(primary_one_Ind, secondary_one_Ind)) > 0 & length(intersect(primary_one_Cond, secondary_one_Cond)) > 0){
       answer <- "TRUE"
     } else{
       answer <- "FALSE"
