@@ -266,7 +266,7 @@ r2d3.onRender(function(data, svg, width, height, options) {
     svg.append("g")
         .attr("text-anchor", "end")
         .attr("font-family", "sans-serif")
-        .attr('font-size', i => (options.label_format === "Point Estimate")? '.7rem' : '.6rem')
+        .attr('font-size', i => (options.label_format === "Point Estimate")? '.75rem' : '.6rem')
       //  .style('font-weight','bold')
         .selectAll("text")
         .data(primary_data)

@@ -25,7 +25,7 @@ json <- fromJSON(rawToChar(res$content))
 data <- json$items
 
 shiny::validate(
-  need(!("msg" %in% colnames(json)), 'The request could not be completed due to an internal server error.'),
+  need(!("msg" %in% names(json)), 'The request could not be completed due to an internal server error.'),
   need(length(data)!=0, 'Data Not Available for State/Territory/Tribe.')
 )
 

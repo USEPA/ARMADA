@@ -1,7 +1,7 @@
 source("global.R")
 source("ui_elements.R")
 addResourcePath(prefix = 'www', directoryPath = './www')
-
+steps <- read.csv("www/help.csv")
 #### UI----
 ui <-  tagList(
   # List the first level UI elements here
@@ -12,15 +12,19 @@ ui <-  tagList(
       content on this page is not production ready. This site is being used
       for <strong>development</strong> and/or <strong>testing</strong> purposes
       only.</div>"),
-    includeHTML("www/header.html")
+    includeHTML("www/header.html"),
+    includeCSS("www/introjs.min.css"),
+    includeScript("www/intro.min.js"),
+    includeScript("www/app.js")
   ),
   tags$body(
     gfonts::use_pkg_gfont("roboto"),
     id="custom",
       navbarPage(
-        title=span("Water Quality Dashboard", 
-                   style = "font-weight: bold; font-size: 40px; text-align: center;
-                   text-shadow: 0 3px 2px rgba(0,0,0,.75);"),
+        title=
+         span("Water Quality Dashboard",
+         style = "font-weight: bold; font-size: 40px; text-align: center;
+                  text-shadow: 0 3px 2px rgba(0,0,0,.75);"),
         collapsible=TRUE,
         fluid=FALSE,
         id="tabs",
@@ -33,7 +37,7 @@ ui <-  tagList(
                            c("State/Territory/Tribe"="", ORGID)
                ),
                column(12, align="left",
-                      "Section 305(b) of the Federal Clean Water Act requires each state to monitor, assess and report on the quality of its waters relative to
+            "Welcome to the Water Quality Dashboard. Section 305(b) of the Federal Clean Water Act requires each state to monitor, assess and report on the quality of its waters relative to
             designated uses established in accordance with state defined water quality standards. The data illustrated in the dashboard were collected using 
             statistically-valid surveys which allow states to extrapolate the results from the sample sites to the broader population of aquatic resources. 
             Information presented are intended to assist states and the public to track progress in addressing water pollution, identify trends over time, recognize emerging problems 
@@ -42,14 +46,17 @@ ui <-  tagList(
           )
         ),
         tabPanel(
+          div(id="step2",
           span("Condition Summary View",
-               style="text-shadow: 0 3px 2px rgba(0,0,0,.75);"),
+               style="text-shadow: 0 3px 2px rgba(0,0,0,.75);")),
           value = "all_indicator",
-          allIndicatorsOneConditionCategory()
+          div(id="step1",
+          allIndicatorsOneConditionCategory())
         ),
         tabPanel(
+          div(id="step3",
           span("Indicator Summary View",
-               style="text-shadow: 0 3px 2px rgba(0,0,0,.75);"),
+               style="text-shadow: 0 3px 2px rgba(0,0,0,.75);")),
           value = "one_indicator",
           oneIndicatorAllConditionCategories()
         ),
@@ -74,7 +81,16 @@ server <- function(input, output, session) {
   
   observe_helpers()
 
+    session$sendCustomMessage(type = 'setHelpContent', message = list(steps = toJSON(steps)))
+    
+    myObserver <- observe({
+      req(input$org_idcode!="", allindicators_data())
+      session$sendCustomMessage(type = 'startHelp', message = list(""))
+      myObserver$destroy()
+    })
 
+    
+    
   # Example: https://rstudio-connect.dmap-stage.aws.epa.gov/content/74a7f241-6aa1-49e7-99c2-3a5278363e29/?org_idcode=WIDNR
   observe({
     query <- parseQueryString(session$clientData$url_search)
@@ -86,13 +102,17 @@ server <- function(input, output, session) {
   observe({
     req(input$org_idcode != "")
     insertTab(inputId = "tabs",
-                         tabPanel(value="help",
-                                  icon = icon('circle-info'),
-                                  verify_fa = FALSE,
-                                  span("Help",
-                                       style = "font-style:italic;
-                                                text-shadow: 0 3px 2px rgba(0,0,0,.75);")
-                                  ))
+              tabPanel(value="help",
+                       div(id="step6",
+                                  icon('circle-info',
+                                  class = "help-icon fa-pull-left"),
+                       verify_fa = FALSE,
+                       span("Help",
+                       style = "font-style:italic;
+                                text-shadow: 0 3px 2px rgba(0,0,0,.75);
+                                display: flex;
+                                flex-wrap: wrap;"))
+                        ))
   })
   
   rv = reactiveValues()
@@ -127,7 +147,7 @@ server <- function(input, output, session) {
 
   output$state <- renderUI({
     req(input$org_idcode != "")
-
+    
     selectInput("org_id",
                 span("Select a State/Territory/Tribe", 
                      style = "font-weight: bold; font-size: 16px"),
@@ -149,6 +169,7 @@ server <- function(input, output, session) {
     )
   })
   observeEvent(c(input$resource_pop, input$org_id), {
+    req(input$resource_pop != "")
     updateSelectInput(session,
                       "primary_subpop",
                       choices=Data() %>% filter(Resource==input$resource_pop) %>% 
@@ -159,15 +180,12 @@ server <- function(input, output, session) {
   })
   
   observeEvent(c(input$resource_pop, input$primary_subpop, input$org_id), {
-    req(input$primary_subpop != "")
+    req(input$resource_pop != "", input$primary_subpop != "")
     updateSelectInput(session,
                       "comp_subpop",
                       choices=c("None", Data() %>% filter(Resource==input$resource_pop & 
                                                           Subpopulation != input$primary_subpop) %>% select(Subpopulation) %>% unique() %>% pull())
     )
-  })
-  
-  observeEvent(c(input$primary_subpop, input$resource_pop, input$org_id), {
     updateSelectInput(session,
                       "condition_category",
                       choices=Data() %>% filter(Resource==input$resource_pop & 
@@ -181,14 +199,14 @@ server <- function(input, output, session) {
     )
   })
   
-
-  observeEvent(c(input$primary_subpop, input$resource_pop, input$org_id), {
+  observeEvent(c(input$resource_pop, input$primary_subpop, input$org_id), {
     req(ChangeYears())
     updateSelectInput(session,
                       "changediff",
                       choices=rev(ChangeYears())
     )
   })
+  
   #### ORG Data ----
   output$exists <- renderText({  
     req(input$org_idcode != "")
@@ -196,7 +214,7 @@ server <- function(input, output, session) {
     res <- GET(url) 
     json<- fromJSON(rawToChar(res$content))
     data <- json$items
-    if("msg" %in% colnames(json)){
+    if("msg" %in% names(json)){
       exists <- 'Please try again later due to an internal server error.'
     } else if(length(data)==0){
       exists <- 'Data Not Available for State/Territory/Tribe.'
@@ -245,7 +263,7 @@ server <- function(input, output, session) {
   
   #### Dashboard Data ----
   Dashboarddata <- eventReactive(c(input$comp_subpop, input$primary_subpop, input$resource_pop, input$org_id),{
-    req(input$primary_subpop, input$resource_pop, input$org_id)
+    req(input$primary_subpop!="", input$resource_pop!="", input$org_id!="")
     filter(Data(), 
            Resource == input$resource_pop &
            Subpopulation == input$primary_subpop) %>%
@@ -257,7 +275,7 @@ server <- function(input, output, session) {
   
   #### Change Years ----
   ChangeYears <- eventReactive(c(input$primary_subpop, input$resource_pop, input$org_id, Dashboarddata()), {
-    req(Dashboarddata(), input$primary_subpop, input$resource_pop, input$org_id)
+    req(Dashboarddata(), input$primary_subpop!="", input$resource_pop!="", input$org_id!="")
     
     changechoices <- Dashboarddata() 
     
