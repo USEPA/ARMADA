@@ -24,10 +24,10 @@ oneIndicatorAllConditionCategories <- function() {
 
 # Dashboard Control Panel
 controlPanel <- function() {
- 
     tags$div(
       style = "font-weight: bold; font-size: 14px;", 
       class="controls-container",
+      div(id="step4",
       uiOutput('state'),
       tags$head(tags$style(HTML("#resource_pop ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
       selectInput("resource_pop",
@@ -121,7 +121,8 @@ controlPanel <- function() {
                icon = "circle-question",
                title = "Label Options",
                content = c("Choose a Label to display in the dashboard."),
-               size = "s", easyClose = TRUE, fade = TRUE),
+               size = "s", easyClose = TRUE, fade = TRUE)),#div
+      div(id="step5",
       conditionalPanel(
         condition = "input.tabs == 'all_indicator'",
         capture::capture(
@@ -145,4 +146,5 @@ controlPanel <- function() {
       )
      )
     )
+   )
 }
