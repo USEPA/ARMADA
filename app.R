@@ -2,6 +2,7 @@ source("global.R")
 source("ui_elements.R")
 addResourcePath(prefix = 'www', directoryPath = './www')
 steps <- read.csv("www/help.csv")
+
 #### UI----
 ui <-  tagList(
   # List the first level UI elements here
@@ -29,10 +30,11 @@ ui <-  tagList(
         fluid=FALSE,
         id="tabs",
         column(12, align="center",
+                uiOutput('UI_elements'),
              conditionalPanel(
                condition = "input.org_idcode == ''",
                selectInput("org_idcode",
-                           "Select a State/Territory/Tribe to View Survey Data", 
+                           HTML("Select a State/Territory/Tribe to</br> Explore and Learn about your Waters"), 
                            width = "300px", 
                            c("State/Territory/Tribe"="", ORGID)
                ),
@@ -41,22 +43,26 @@ ui <-  tagList(
             designated uses established in accordance with state defined water quality standards. The data illustrated in the dashboard were collected using 
             statistically-valid surveys which allow states to extrapolate the results from the sample sites to the broader population of aquatic resources. 
             Information presented are intended to assist states and the public to track progress in addressing water pollution, identify trends over time, recognize emerging problems 
-            and determine effectiveness of water management programs. These information are publicly available and accessed through the", tags$a(href='https://www.epa.gov/waterdata/attains', "ATTAINS database.", target="blank")
+            and determine effectiveness of water management programs. These information are publicly available and accessed through the", tags$a(href='https://www.epa.gov/waterdata/attains', "ATTAINS Web Services.", target="blank")
             )
           )
         ),
         tabPanel(
           div(id="step2",
+              conditionalPanel(
+                condition = "input.org_idcode !== ''",
           span("Condition Summary View",
-               style="text-shadow: 0 3px 2px rgba(0,0,0,.75);")),
+               style="text-shadow: 0 3px 2px rgba(0,0,0,.75);"))),
           value = "all_indicator",
           div(id="step1",
           allIndicatorsOneConditionCategory())
         ),
         tabPanel(
           div(id="step3",
+              conditionalPanel(
+                condition = "input.org_idcode !== ''",
           span("Indicator Summary View",
-               style="text-shadow: 0 3px 2px rgba(0,0,0,.75);")),
+               style="text-shadow: 0 3px 2px rgba(0,0,0,.75);"))),
           value = "one_indicator",
           oneIndicatorAllConditionCategories()
         ),
@@ -80,6 +86,43 @@ ui <-  tagList(
 server <- function(input, output, session) {
   
   observe_helpers()
+  
+  tp <- reactive({
+    case_when(input$org_idcode==""~ '#custom .navbar-default .navbar-nav>.active>a {
+                                      background-color: transparent;
+              }', TRUE ~ '#custom .navbar-default .navbar-nav>.active>a {
+                      background-color: rgb(0, 150, 214,  0.5);
+              }')
+  })
+  
+
+  bg <- reactive({
+    case_when(input$condition_category %in% c("Fair", "Indeterminate", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate", "Inconclusive") ~ 
+                '#condition_category ~ .selectize-control.single .selectize-input {border-color: #ffe083; border-width: 3px;
+                                        }',
+              input$condition_category %in% c("Poor", "Fail", "Not Supporting Use", "Violating", "Suboptimal", "Not Supporting", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed", "Exceeds WQS") ~ '#condition_category ~ .selectize-control.single .selectize-input {
+                                            border-color: #f99c9c; border-width: 3px;
+                                        }',
+              input$condition_category %in% c("Missing", "Not Assessed", "Insufficient Information", "Unassessed", "Unknown", "No data") ~ '#condition_category ~ .selectize-control.single .selectize-input {
+                                            border-color: #e8ccbe; border-width: 3px;
+                                        }',
+              TRUE  ~ '#condition_category ~ .selectize-control.single .selectize-input {
+                border-color: #6ba3d6; border-width: 3px;
+                }')
+  })
+  
+  comp_bg <- reactive({
+    case_when(input$comp_subpop != "None" ~ '#comp_subpop ~ .selectize-control.single .selectize-input {border-color: grey; border-width: 3px;
+                                        }',
+              TRUE ~ '#comp_subpop ~ .selectize-control.single .selectize-input {
+    background-color: #eee; font-weight: bold;
+    }')
+  })
+  
+
+  output$UI_elements <- renderUI({
+    tagList(fluidPage(tags$style(HTML(bg(), comp_bg(), tp()))))
+  })
 
     session$sendCustomMessage(type = 'setHelpContent', message = list(steps = toJSON(steps)))
     
@@ -190,7 +233,7 @@ server <- function(input, output, session) {
                       "condition_category",
                       choices=Data() %>% filter(Resource==input$resource_pop & 
                                                 Subpopulation==input$primary_subpop) %>%
-                        arrange(desc(T1_Year), factor(Condition, levels = condition_levels))  %>% select(Condition) %>% unique() %>% pull()
+                        arrange(desc(T1_Year), factor(Condition, levels = condition_levels)) %>% select(Condition) %>% unique() %>% pull()
     )
     updateSelectInput(session,
                       "indicator",
@@ -309,39 +352,8 @@ server <- function(input, output, session) {
     req(ChangeYears(), input$indicator %in% unique(Dashboarddata()$Indicator))
     filter(Dashboarddata(),
            Indicator == input$indicator) %>% 
-      #removes duplicate indicator results (sometimes states will include same indicator for different uses)
+      #removes duplicate indicator results (sometimes states will include same indicator for different uses). This only shows in the Indicator View.
     distinct(Resource, Subpopulation, Indicator, T1.P.Estimate, .keep_all = TRUE)
-  })
-  
-
-  bg <- reactive({
-    case_when(input$condition_category %in% c("Fair", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate") ~ 
-                  '#condition_category ~ .selectize-control.single .selectize-input {border-color: #ffe083; border-width: 3px;
-                                        }',
-              input$condition_category %in% c("Poor", "Fail", "Not Supporting Use", "Violating", "Suboptimal", "Not Supporting", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed") ~ '#condition_category ~ .selectize-control.single .selectize-input {
-                                            border-color: #f99c9c; border-width: 3px;
-                                        }',
-              input$condition_category %in% c("Missing", "Not Assessed", "Insufficient Information", "Indeterminate", "Unassessed", "Unknown") ~ '#condition_category ~ .selectize-control.single .selectize-input {
-                                            border-color: #e8ccbe; border-width: 3px;
-                                        }',
-              TRUE  ~ '#condition_category ~ .selectize-control.single .selectize-input {
-                border-color: #6ba3d6; border-width: 3px;
-                }')
-  })
-  
-  comp_bg <- reactive({
-    case_when(input$comp_subpop != "None" ~ '#comp_subpop ~ .selectize-control.single .selectize-input {border-color: grey; border-width: 3px;
-                                        }',
-    TRUE ~ '#comp_subpop ~ .selectize-control.single .selectize-input {
-    background-color: #eee; font-weight: bold;
-    }')
-  })
-  
-  output$background_change <- renderUI({
-    tagList(fluidPage(tags$style(HTML(bg()))))
-  })
-  output$comp_background <- renderUI({
-    tagList(fluidPage(tags$style(HTML(comp_bg()))))
   })
   
   #### All Indicators Dashboard ----
@@ -349,15 +361,15 @@ observeEvent(c(allindicators_data(), input$tabs), {
     # Builds the dashboard located in the All Indicators, One Condition Category tab
     output$allindicators <- r2d3::renderD3({
     #  req(input$org_id, input$resource_pop, input$primary_subpop, input$condition_category, input$changediff, !is.na(Dashboarddata()), ChangeYears())
-      
+      req(input$primary_subpop != input$comp_subpop)
       all_indicators_data <- allindicators_data()
       
       if(length(grep(x = colnames(all_indicators_data), pattern = "_Year")) > 1) {
-        early_estimate <- paste0(str_sub(input$changediff, start= 3, end=4), ".P.Estimate")
-        early_year <- paste0(str_sub(input$changediff, start= 3, end=4), "_Year")
+        early_estimate <- paste0(str_sub(input$changediff, start=3, end=4), ".P.Estimate")
+        early_year <- paste0(str_sub(input$changediff, start=3, end=4), "_Year")
         #Delete when crow fixes diamond tooltip
-        early_lcb <- paste0(str_sub(input$changediff, start= 3, end=4), ".LCB")
-        early_ucb <- paste0(str_sub(input$changediff, start= 3, end=4), ".UCB")
+        early_lcb <- paste0(str_sub(input$changediff, start=3, end=4), ".LCB")
+        early_ucb <- paste0(str_sub(input$changediff, start=3, end=4), ".UCB")
         
         
         
@@ -378,32 +390,32 @@ observeEvent(c(allindicators_data(), input$tabs), {
                  T1T2_DIFF.P = NA)
       }
       
-      year <- all_indicators_data$T1_Year %>% unique()
-      units <- all_indicators_data$Units %>% unique()
+      year <- unique(all_indicators_data$T1_Year)
+      units <- unique(all_indicators_data$Units)
       
  comp_exists <- comp_exists()
- margin_top <- if(input$comp_subpop == "None" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) > 76 &
-                  nchar(paste0(input$primary_subpop, " Estimates")) > 115){
+ margin_top <- if(input$comp_subpop == "None" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) > 75 &
+                  nchar(paste0(year, "", input$primary_subpop, " Estimates")) > 115){
    190
- } else if(input$comp_subpop == "None" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) > 76 &
-           nchar(paste0(input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) > 115){
+ } else if(input$comp_subpop == "None" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) > 75 &
+           nchar(paste0(year, "", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) > 115){
    190
- } else if(input$comp_subpop != "None" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 76 &
+ } else if(input$comp_subpop != "None" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 75 &
            nchar(paste0("Comparison: ", year, " ", input$primary_subpop, " Estimates | ", year, " ", input$comp_subpop, " Estimates")) > 115){
    190
- } else if(input$comp_subpop != "None" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ", units, " in ", input$condition_category, " Category")) > 76 &
+ } else if(input$comp_subpop != "None" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ", units, " in ", input$condition_category, " Category")) > 75 &
            nchar(paste0("Comparison: ", year, " ", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]), " | ", year, " ", input$comp_subpop, " Estimates")) > 115){
    190
- } else if(input$comp_subpop == "None" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) <= 76 &
-           nchar(paste0(input$primary_subpop, " Estimates")) <= 115){
+ } else if(input$comp_subpop == "None" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) <= 75 &
+           nchar(paste0(year, "", input$primary_subpop, " Estimates")) <= 115){
    120
- } else if(input$comp_subpop == "None" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) <= 76 &
-           nchar(paste0(input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) <= 115){
+ } else if(input$comp_subpop == "None" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) <= 75 &
+           nchar(paste0(year, "", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) <= 115){
    120
- } else if(input$comp_subpop != "None" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) <= 76 &
+ } else if(input$comp_subpop != "None" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) <= 75 &
            nchar(paste0("Comparison: ", year, " ", input$primary_subpop, " Estimates | ", year, " ", input$comp_subpop, " Estimates")) <= 115){
    120
- } else if(input$comp_subpop != "None" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) <= 76 &
+ } else if(input$comp_subpop != "None" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ",units, " in ", input$condition_category, " Category")) <= 75 &
            nchar(paste0("Comparison: ", year, " ", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]), " | ", year, " ", input$comp_subpop, " Estimates")) <= 115){
    120 
  } else {
@@ -426,7 +438,7 @@ observeEvent(c(allindicators_data(), input$tabs), {
       
       dashboard_height <- getDashboardHeight(all_indicators_data, input$primary_subpop, NA, "all")
       
-      survey_comment <- all_indicators_data$survey_comment %>% unique()
+      survey_comment <- unique(all_indicators_data$survey_comment)
       
       if(survey_comment==""){
         survey_comment <- "No comments available from State/Territory/Tribe."
@@ -447,7 +459,7 @@ observeEvent(c(allindicators_data(), input$tabs), {
                                 Subpopulation == input$comp_subpop &
                                 Condition == input$condition_category) %>%
         select_if(~any(!is.na(.)))
-      comp_year <- all_subpop_data$T1_Year %>% unique()
+      comp_year <- unique(all_subpop_data$T1_Year)
       
       all_indicators_data <- all_indicators_data %>% bind_rows(all_subpop_data)
       }
@@ -467,7 +479,7 @@ observeEvent(c(oneindicator_data(), input$tabs), {
   # Builds the dashboard located in the One Indicator, All Condition Categories tab
   output$oneindicator <- r2d3::renderD3({
     #req(comp_exists(), input$comp_subpop, input$primary_subpop, input$resource_pop, input$indicator, input$changediff, Dashboarddata(), ChangeYears())
-    
+    req(input$primary_subpop != input$comp_subpop)
     one_indicator_data <- oneindicator_data()
     
     if(length(grep(x = colnames(one_indicator_data), pattern = "_Year")) > 1) {
@@ -493,41 +505,41 @@ observeEvent(c(oneindicator_data(), input$tabs), {
                T1T2_DIFF.P = NA)
     }
     
-    year <- one_indicator_data$T1_Year %>% unique()
-    units <- one_indicator_data$Units %>% unique()
+    year <- unique(one_indicator_data$T1_Year)
+    units <- unique(one_indicator_data$Units)
     
  comp_exists <- comp_exists()
  
  
  margin_top <- 
-        if(input$comp_subpop == "None" & comp_exists == "FALSE" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 76 &
+        if(input$comp_subpop == "None" & comp_exists == "FALSE" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 75 &
                   nchar(paste0(input$indicator))> 115){
    190
- } else if(input$comp_subpop == "None" & comp_exists == "TRUE" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 76 &
-           nchar(paste0(input$indicator, " | ", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff])))> 115){
+ } else if(input$comp_subpop == "None" & comp_exists == "TRUE" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 75 &
+           nchar(paste0(input$indicator, " | ", year, "",  input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff])))> 115){
    190
- } else if(input$comp_subpop == "None" & comp_exists == "FALSE" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 76 &
-           nchar(paste0(input$indicator, " | ", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) > 115){
+ } else if(input$comp_subpop == "None" & comp_exists == "FALSE" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 75 &
+           nchar(paste0(input$indicator, " | ", year, "",  input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) > 115){
    190
- } else if(input$comp_subpop != "None" & comp_exists == "TRUE" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 76 &
+ } else if(input$comp_subpop != "None" & comp_exists == "TRUE" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 75 &
            nchar(paste0(input$indicator, " | Comparison: ", year, " ", input$primary_subpop, " Estimates | ", year, " ", input$comp_subpop, " Estimates")) > 115){
    190
- } else if(input$comp_subpop != "None" & comp_exists == "TRUE" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 76 &
+ } else if(input$comp_subpop != "None" & comp_exists == "TRUE" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) > 75 &
            nchar(paste0(input$indicator, " | Comparison: ", year, " ", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]), " |", year, " ", input$comp_subpop, " Estimates")) > 115){
    190
- } else if(input$comp_subpop == "None" & comp_exists == "FALSE" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 76 &
-           nchar(paste0(input$indicator, " | ", input$primary_subpop, " Estimates")) <= 115){
+ } else if(input$comp_subpop == "None" & comp_exists == "FALSE" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 75 &
+           nchar(paste0(input$indicator, " | ", year, "", input$primary_subpop, " Estimates")) <= 115){
    120 
- } else if(input$comp_subpop == "None" & comp_exists == "TRUE" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 76 &
-           nchar(paste0(input$indicator, " | ", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) <= 115){
+ } else if(input$comp_subpop == "None" & comp_exists == "TRUE" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 75 &
+           nchar(paste0(input$indicator, " | ", year, "",  input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) <= 115){
    120 
- } else if(input$comp_subpop == "None" & comp_exists == "FALSE" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 76 &
-           nchar(paste0(input$indicator, " | ", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) <= 115){
+ } else if(input$comp_subpop == "None" & comp_exists == "FALSE" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | ",year," | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 75 &
+           nchar(paste0(input$indicator, " | ", year, "", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]))) <= 115){
    120 
- } else if(input$comp_subpop != "None" & comp_exists == "TRUE" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 76 &
+ } else if(input$comp_subpop != "None" & comp_exists == "TRUE" & input$changediff == "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 75 &
            nchar(paste0(input$indicator, " | Comparison: ", year, " ", input$primary_subpop, " Estimates | ", year, " ", input$comp_subpop, " Estimates")) <= 115){
    120 
- } else if(input$comp_subpop != "None" & comp_exists == "TRUE" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 76 &
+ } else if(input$comp_subpop != "None" & comp_exists == "TRUE" & input$changediff != "Only One Year Available" & nchar(paste0(names(ORGID_choices[ORGID_choices==input$org_id]), " | Percent of ", input$resource_pop, " ", units, " in Each Condition Category")) <= 75 &
            nchar(paste0(input$indicator, " | Comparison: ", year, " ", input$primary_subpop, " Estimates and ", names(ChangeYears()[ChangeYears()==input$changediff]), " | ", year, " ", input$comp_subpop, " Estimates")) <= 115){
    120 
  } else {
@@ -549,7 +561,7 @@ observeEvent(c(oneindicator_data(), input$tabs), {
     }
     dashboard_height <- getDashboardHeight(one_indicator_data, input$primary_subpop, input$indicator, "one")
     
-    survey_comment <- one_indicator_data$survey_comment %>% unique()
+    survey_comment <- unique(one_indicator_data$survey_comment)
     if(survey_comment==""){
       survey_comment <- "No comments available from State/Territory/Tribe."
     }
@@ -575,7 +587,7 @@ observeEvent(c(oneindicator_data(), input$tabs), {
                               Indicator == input$indicator) %>%
       select_if(~any(!is.na(.)))
     
-    comp_year <- one_subpop_data$T1_Year %>% unique()
+    comp_year <- unique(one_subpop_data$T1_Year)
     one_indicator_data <- one_indicator_data %>% bind_rows(one_subpop_data) %>% unique()
     }
     # options passed to javascript

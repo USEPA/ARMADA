@@ -53,7 +53,7 @@ ORGID<-list(States=
                 "Kentucky"="21KY","Louisiana"="LADEQWPD","Maine"="MEDEP","Maryland"="MDE_EASP","Massachusetts"="MA_DEP",
                 "Michigan"="21MICH","Minnesota"="MNPCA","Mississippi"="21MSWQ","Missouri"="MDNR","Montana"="MTDEQ","Nebraska"="21NEB001",
                 "Nevada"="21NEV1","New Hampshire"="11113300","New Jersey"="21NJDEP1","New Mexico"="21NMEX","New York"="21NYDECA",
-                "North Carolina"="21NC01WQ","North Dakota"="21NDHDWQ","Oklahoma"="OKDEQ","Oregon"="OREGONDEQ","Pennsylvania"="21PA",
+                "North Carolina"="21NC01WQ","North Dakota"="21NDHDWQ","Ohio"="21OHIO","Oklahoma"="OKDEQ","Oregon"="OREGONDEQ","Pennsylvania"="21PA",
                 "Rhode Island"="RIDEM","South Carolina"="21SC60WQ","South Dakota"="SDDENR","Tennessee"="TDECWR","Texas"="TCEQMAIN",
                 "Utah"="UTAHDWQ","Vermont"="1VTDECWQ","Virginia"="21VASWCB","Washington"="WA_ECOLOGY","West Virginia"="WVDEP",
                 "Wisconsin"="WIDNR","Wyoming"="WYDEQ"),
@@ -74,7 +74,7 @@ ORGID_choices<-c("Alabama"="21AWIC","Alaska"="AKDECWQ","Arizona"="21ARIZ","Arkan
                 "Kentucky"="21KY","Louisiana"="LADEQWPD","Maine"="MEDEP","Maryland"="MDE_EASP","Massachusetts"="MA_DEP",
                 "Michigan"="21MICH","Minnesota"="MNPCA","Mississippi"="21MSWQ","Missouri"="MDNR","Montana"="MTDEQ","Nebraska"="21NEB001",
                 "Nevada"="21NEV1","New Hampshire"="11113300","New Jersey"="21NJDEP1","New Mexico"="21NMEX","New York"="21NYDECA",
-                "North Carolina"="21NC01WQ","North Dakota"="21NDHDWQ","Oklahoma"="OKDEQ","Oregon"="OREGONDEQ","Pennsylvania"="21PA",
+                "North Carolina"="21NC01WQ","North Dakota"="21NDHDWQ","Ohio"="21OHIO","Oklahoma"="OKDEQ","Oregon"="OREGONDEQ","Pennsylvania"="21PA",
                 "Rhode Island"="RIDEM","South Carolina"="21SC60WQ","South Dakota"="SDDENR","Tennessee"="TDECWR","Texas"="TCEQMAIN",
                 "Utah"="UTAHDWQ","Vermont"="1VTDECWQ","Virginia"="21VASWCB","Washington"="WA_ECOLOGY","West Virginia"="WVDEP",
                 "Wisconsin"="WIDNR","Wyoming"="WYDEQ",
@@ -90,8 +90,8 @@ ORGID_choices<-c("Alabama"="21AWIC","Alaska"="AKDECWQ","Arizona"="21ARIZ","Arkan
                 "Ute Mountain Ute Tribe"="UTEMTN")
 
 condition_levels <- c("Excellent", "Excellent Condition", "Very Good", "Optimal", "Pass", "Good", "Supporting Use", "Meeting", "Fully Supporting", "Fully supporting", "Meets", "Supports", "Support", "Not Detected", "At Or Below Benchmark", "Low", "Attaining", "Good Condition", "Least Disturbed",
-                      "Fair", "Inconclusive", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate",
+                      "Fair", "Inconclusive", "Partially Supporting", "Satisfactory", "Moderate", "Potentially Not Supporting", "Fair Condition", "Intermediate", "Indeterminate",
                       "Poor", "Fail", "Not Supporting Use", "Violating", "Suboptimal", "Not Supporting", "Not supporting", "Violates", "Impaired", "Violates Natural", "Detected", "Above Benchmark", "High", "Poor Condition", "Most Disturbed",
-                      "Missing", "Not Assessed", "Insufficient Information", "Indeterminate", "Unassessed", "Unknown")
+                      "Missing", "Not Assessed", "Insufficient Information", "Unassessed", "Unknown", "No data", "Exceeds WQS", "Meets WQS")
 
 

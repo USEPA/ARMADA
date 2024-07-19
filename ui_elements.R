@@ -62,7 +62,7 @@ controlPanel <- function() {
           helper(type = "inline",
                  icon = "circle-question",
                  title = "Comparision Population",
-                 content = c("State/Territories/Tribes may sample other Populations rather than statewide. Users can compare water quality conditions across Populations."),
+                 content = c("Users can compare water quality conditions across populations by overlaying the confidence intervals of a comparison population."),
                  size = "s", easyClose = TRUE, fade = TRUE),
       ),
       conditionalPanel(
@@ -93,8 +93,6 @@ controlPanel <- function() {
                  content = c("An Indicator represents the state or trend of certain environmental conditions over a given area and a specified period of time. Use the input to explore the results for different Indicators."),
                  size = "s", easyClose = TRUE, fade = TRUE)
       ),
-      uiOutput('background_change'),
-      uiOutput('comp_background'),
       conditionalPanel(
         condition = "input.changediff != 'Only One Year Available'",
       tags$head(tags$style(HTML("#changediff ~ .selectize-control.single .selectize-input {background-color: #eee; font-weight: bold;}"))),
