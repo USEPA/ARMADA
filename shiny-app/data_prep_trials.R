@@ -147,9 +147,10 @@ all_surveys <- all_surveys %>%
   left_join(survey_comment, by = join_by(T1_Year, Resource, Subpopulation, Units)) %>%
   arrange(desc(T1_Year), factor(Subpopulation, levels = c("Statewide"))) %>%
   mutate(Subpopulation = paste0(Subpopulation," (",Units,")")) %>%
-  #adding comments and a sort dummy variable to put Designated use estimates below stressors and OVERALL at bottom of dashboard
+  #adding comments and a sort dummy variable to put Designated use estimates above stressors and OVERALL at bottom of dashboard
   mutate(commentText = if_else(is.na(commentText),"",commentText),
          survey_comment = if_else(is.na(survey_comment ),"",survey_comment),
+         #Indicator = str_remove(Indicator, "condition|Condition|CONDITION"),
          USEsort = case_when(#str_detect(Indicator, "CONDITION|Condition|condition") ~ "A",
                              surveyUseCode==Indicator ~ "B",
                              TRUE ~ "A"),

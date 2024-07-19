@@ -61,11 +61,11 @@ function isRecordNA(view, d) {
 
 /* This needs to be CategoryConditionColor!*/
 function getMarkerColor(condition) {
-	if (condition==="Pass"||condition==="Good"||condition==="Supporting Use"||condition==="Meeting"||condition==="Fully Supporting"||condition==="Meets"||condition==="Supports"||condition==="Support"||condition==="Excellent"||condition==="Not Detected"||condition==="At Or Below Benchmark"||condition==="Low"||condition==="Attaining"||condition==="Very Good"||condition==="Good Condition"||condition==="Excellent Condition"||condition==="Least Disturbed"||condition==="Optimal")
+	if (condition==="Pass"||condition==="Good"||condition==="Supporting Use"||condition==="Meeting"||condition==="Fully Supporting"||condition==="Meets"||condition==="Supports"||condition==="Support"||condition==="Excellent"||condition==="Not Detected"||condition==="At Or Below Benchmark"||condition==="Low"||condition==="Attaining"||condition==="Very Good"||condition==="Good Condition"||condition==="Excellent Condition"||condition==="Least Disturbed"||condition==="Optimal"||condition==="Meets WQS")
 		return good_color;
-	else if (condition === "Fair"||condition === "Partially Supporting"||condition==="Satisfactory"||condition==="Moderate"||condition==="Potentially Not Supporting"||condition==="Fair Condition"||condition==="Intermediate")
+	else if (condition === "Fair"||condition === "Partially Supporting"||condition==="Satisfactory"||condition==="Moderate"||condition==="Potentially Not Supporting"||condition==="Fair Condition"||condition==="Intermediate"||condition==="Inconclusive"||condition==="Indeterminate")
 		return fair_color;
-	else if (condition === "Fail"||condition==="Poor"||condition==="Not Supporting Use"||condition==="Violating"||condition==="Not Supporting"||condition==="Violates"||condition==="Violates Natural"||condition==="Impaired"||condition==="Detected"||condition==="Above Benchmark"||condition==="High"||condition==="Poor Condition"||condition==="Most Disturbed"||condition==="Suboptimal")
+	else if (condition === "Fail"||condition==="Poor"||condition==="Not Supporting Use"||condition==="Violating"||condition==="Not Supporting"||condition==="Violates"||condition==="Violates Natural"||condition==="Impaired"||condition==="Detected"||condition==="Above Benchmark"||condition==="High"||condition==="Poor Condition"||condition==="Most Disturbed"||condition==="Suboptimal"||condition==="Exceeds WQS")
 		return poor_color;
 	else
 		return na_color;
@@ -73,11 +73,11 @@ function getMarkerColor(condition) {
 
 /* This needs to be CategoryConditionColor!*/
 function getMarkerSigColor(condition) {
-	if (condition==="Pass"||condition==="Good"||condition==="Supporting Use"||condition==="Meeting"||condition==="Fully Supporting"||condition==="Meets"||condition==="Supports"||condition==="Support"||condition==="Excellent"||condition==="Not Detected"||condition==="At or Below Benchmark"||condition==="Low"||condition==="Attaining"||condition==="Very Good"||condition==="Good Condition"||condition==="Excellent Condition"||condition==="Least Disturbed"||condition==="Optimal")
+	if (condition==="Pass"||condition==="Good"||condition==="Supporting Use"||condition==="Meeting"||condition==="Fully Supporting"||condition==="Meets"||condition==="Supports"||condition==="Support"||condition==="Excellent"||condition==="Not Detected"||condition==="At or Below Benchmark"||condition==="Low"||condition==="Attaining"||condition==="Very Good"||condition==="Good Condition"||condition==="Excellent Condition"||condition==="Least Disturbed"||condition==="Optimal"||condition==="Meets WQS")
 		return good_color;
-	else if (condition === "Fair"||condition === "Partially Supporting"||condition==="Satisfactory"||condition==="Moderate"||condition==="Potentially Not Supporting"||condition==="Fair Condition"||condition==="Intermediate")
+	else if (condition === "Fair"||condition === "Partially Supporting"||condition==="Satisfactory"||condition==="Moderate"||condition==="Potentially Not Supporting"||condition==="Fair Condition"||condition==="Intermediate"||condition==="Inconclusive"||condition==="Indeterminate")
 		return fair_color;
-	else if (condition === "Fail"||condition==="Poor"||condition==="Not Supporting Use"||condition==="Violating"||condition==="Not Supporting"||condition==="Violates"||condition==="Violates Natural"||condition==="Impaired"||condition==="Detected"||condition==="Above Benchmark"||condition==="High"||condition==="Poor Condition"||condition==="Most Disturbed"||condition==="Suboptimal")
+	else if (condition === "Fail"||condition==="Poor"||condition==="Not Supporting Use"||condition==="Violating"||condition==="Not Supporting"||condition==="Violates"||condition==="Violates Natural"||condition==="Impaired"||condition==="Detected"||condition==="Above Benchmark"||condition==="High"||condition==="Poor Condition"||condition==="Most Disturbed"||condition==="Suboptimal"||condition==="Exceeds WQS")
 		return poor_sig_color;
 	else
 		return na_sig_color;
@@ -210,13 +210,13 @@ function createTitle(view, options) { // primary_subpop, comparison_subpop, cond
 	
 	
 if(view === "all") {	 
-    title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>${options.primary_subpop} Estimates and ${options.change}`;
+    title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>${options.year} ${options.primary_subpop} Estimates and ${options.change}`;
     if(comp_exists === "TRUE" & comp_subpop !== "None"){
       title = `<h1>${options.state} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>Comparison: ${options.year} ${options.primary_subpop} Estimates and ${options.change} | <span style="color:grey">${options.comp_year} ${options.comp_subpop} Estimates</span>`;
     }
   
   if(change_header === "No Change Available"){
-    title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>${options.primary_subpop} Estimates`;
+    title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>${options.year} ${options.primary_subpop} Estimates`;
     if(comp_exists === "TRUE" & comp_subpop !== "None"){
       title = `<h1>${options.state} | Percent of ${options.resource} ${options.units} in ${options.condition} Category</h1>Comparison: ${options.year} ${options.primary_subpop} Estimates | <span style="color:grey">${options.comp_year} ${options.comp_subpop} Estimates</span>`;
     }
@@ -224,12 +224,12 @@ if(view === "all") {
 }
     
 	if(view === "one") {
-		title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | ${options.primary_subpop} Estimates and ${options.change}`;
+		title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | ${options.year} ${options.primary_subpop} Estimates and ${options.change}`;
 		if(comp_exists === "TRUE" & comp_subpop !== "None"){
       title = `<h1>${options.state} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | Comparison: ${options.year} ${options.primary_subpop} Estimates and ${options.change} | <span style="color:grey">${options.comp_year} ${options.comp_subpop} Estimates</span>`;
     }
 		if(change_header === "No Change Available"){
-      title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | ${options.primary_subpop} Estimates`;
+      title = `<h1>${options.state} | ${options.year} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | ${options.year} ${options.primary_subpop} Estimates`;
     if(comp_exists === "TRUE" & comp_subpop !== "None"){
       title = `<h1>${options.state} | Percent of ${options.resource} ${options.units} in Each Condition Category</h1><b><u>${options.use}</u></b> | Comparison:  ${options.year} ${options.primary_subpop} Estimates | <span style="color:grey">${options.comp_year} ${options.comp_subpop} Estimates</span>`;
     }

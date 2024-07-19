@@ -1,5 +1,5 @@
 step,element,intro,position
-1,#step1,"(1/6) Explore estimated water quality conditions across the nation. Hover over a graphic for an explanation of the results. To learn the available features, click Next. If you would like to begin using the dashboard immediately, click Skip.",top
+1,#step1,"(1/6) Explore estimated water quality conditions across States/Territories/Tribes. Hover over a graphic for an explanation of the results. To learn the available features, click Next. If you would like to begin using the dashboard immediately, click Skip.",top
 2,#step2,(2/6) View all available Indicators by each Condition Class., bottom
 3,#step3,(3/6) View each available Indicator by all Condition Classes., bottom
 4,#step4,(4/6) Use these controls to change what data are shown.,left
