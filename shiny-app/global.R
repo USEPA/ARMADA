@@ -1,9 +1,9 @@
- packages <- c("shiny","dplyr","purrr","stringr","tidyr","gfonts","httr","jsonlite","r2d3","shinyBS", "shinybusy","shinyhelper","shinyalert")
+# packages <- c("shiny","dplyr","purrr","stringr","tidyr","gfonts","httr","jsonlite","r2d3","shinyBS", "shinybusy","shinyhelper","shinyalert")
  
- installed_packages <- packages %in% rownames(installed.packages())
- if(any(installed_packages == FALSE)) {
-   install.packages(packages[!installed_packages])
- }
+ #installed_packages <- packages %in% rownames(installed.packages())
+# if(any(installed_packages == FALSE)) {
+#   install.packages(packages[!installed_packages])
+# }
  
 #  if(!"capture" %in% installed.packages()) {
 #      remotes::install_github("dreamRs/capture")
