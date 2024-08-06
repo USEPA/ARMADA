@@ -14,3 +14,4 @@ packages:
     - name: shinyhelper
     - name: shinyalert
     - name: remotes
+    - name: shinyBS
