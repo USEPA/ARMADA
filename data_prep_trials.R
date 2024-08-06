@@ -68,10 +68,7 @@ df3 <- as.data.frame(do.call(rbind, lapply(df2 , as.data.frame))) %>%
   arrange(desc(Year), Resource, stressor) %>%
   select(-statistic, -marginOfError) %>%
   rename(Indicator=stressor,
-         Condition=surveyCategoryCode) %>%
-  mutate(Indicator = case_when(Indicator %in% c("Benthic Macroinvertebrate Bioassessment", "BENTHIC MACROINVERTEBRATES BIOASSESSMENTS", 
-                                                "Benthic Macroinvertebrate", "BENTHIC MACROINVERTEBRATE") ~ "BENTHIC MACROINVERTEBRATES",
-                               TRUE ~ Indicator))
+         Condition=surveyCategoryCode)
 
 row.names(df3 ) <- NULL
 # Current Surveys----

@@ -1,7 +1,6 @@
 step,element,intro,position
-1,#step1,"(1/6) Explore estimated water quality conditions across States/Territories/Tribes. Hover over a graphic for an explanation of the results. To learn the available features, click Next. If you would like to begin using the dashboard immediately, click Skip.",top
-2,#step2,(2/6) View all available Indicators by each Condition Class., bottom
-3,#step3,(3/6) View each available Indicator by all Condition Classes., bottom
-4,#step4,(4/6) Use these controls to change what data are shown.,left
-5,#step5,(5/6) Click here to download an image of the dashboard.,left
-6,#step6,(6/6) Click here for additional help interpreting the dashboard.,bottom
+1,#step1,"(1/5) Explore estimated water quality conditions across States/Territories/Tribes. Hover over a graphic for an explanation of the results. To learn the available features, click Next. If you would like to begin using the dashboard immediately, click Skip.",top
+2,#step2,(2/5) View all available Indicators by each Condition Class., bottom
+3,#step3,(3/5) View each available Indicator by all Condition Classes., bottom
+4,#step4,(4/5) Use these controls to change what data are shown.,left
+5,#step5,"(5/5) Use these buttons to export an image of the dashboard, download the data, or get help interpretting the dashboard.",top

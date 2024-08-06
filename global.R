@@ -24,8 +24,12 @@ library(jsonlite)
 library(r2d3)
 library(capture)
 library(shinyalert)
+library(shinyBS)
 library(shinyhelper)
 library(shinybusy)
+library(openxlsx)
+
+metadata <- read.csv("www/Metadata.csv")
 
 options(warn=-1)
 

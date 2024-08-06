@@ -258,7 +258,9 @@ r2d3.onRender(function(data, svg, width, height, options) {
         .attr("y", (d, i) => y_cond_est(i))
         .attr("width", d => x_cond_est(d["T1.P.Estimate"]) - x_cond_est(0))
         .attr("height", y_cond_est.bandwidth())
-        .style("opacity", default_stroke_opacity)
+        .attr('stroke', marker_color)
+        .attr('stroke-width', 1)
+        .style("fill-opacity", default_stroke_opacity)
         .call(tooltip, tooltipDiv, "cond_est");
 
     cond_est_g.selectAll(".cond-est-ci-bar-primary-subpop")
