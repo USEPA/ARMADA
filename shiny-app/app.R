@@ -7,6 +7,7 @@ steps <- read.csv("www/help.csv")
 ui <-  tagList(
   # List the first level UI elements here
   tags$head(
+    tags$title('ARMADA | US EPA'),
     tags$link(rel = "stylesheet", type = "text/css", href = "style.css"),
     tags$html(class = "no-js", lang = "en"),
     HTML("<div id='eq-disclaimer-banner' class='padding-1 text-center text-white bg-secondary-dark'><strong>EPA development environment:</strong> The
@@ -23,9 +24,13 @@ ui <-  tagList(
     id="custom",
       navbarPage(
         title=
-         span("Water Quality Dashboard",
-         style = "font-weight: bold; font-size: 40px; text-align: center;
-                  text-shadow: 0 3px 2px rgba(0,0,0,.75);"),
+         HTML(paste(p("Aquatic Resource",
+         style = "font-weight: bold; font-size: 40px; text-align: center; 
+                  line-height: 0.8; text-shadow: 0 3px 2px rgba(0,0,0,.75);")
+                     ,p("Monitoring and Assessment Dashboard",
+         style = "font-weight: bold; font-size: 40px; text-align: center; 
+                  line-height: 0.8; text-shadow: 0 3px 2px rgba(0,0,0,.75);")
+         )),
         collapsible=TRUE,
         fluid=FALSE,
         id="tabs",
@@ -39,12 +44,14 @@ ui <-  tagList(
                            c("State/Territory/Tribe"="", ORGID)
                ),
                column(12, align="left",
-            "Welcome to the Water Quality Dashboard. Section 305(b) of the Federal Clean Water Act requires each state to monitor, assess and report on the quality of its waters relative to
-            designated uses established in accordance with state defined water quality standards. The data illustrated in the dashboard were collected using 
-            statistically-valid surveys which allow states to extrapolate the results from the sample sites to the broader population of aquatic resources. 
-            Information presented are intended to assist states and the public to track progress in addressing water pollution, identify trends over time, recognize emerging problems 
-            and determine effectiveness of water management programs. These information are publicly available and accessed through the", tags$a(href='https://www.epa.gov/waterdata/attains', "ATTAINS Web Services.", target="blank")
-            )
+            p("Welcome to the Aquatic Resource Monitoring and Assessment Dashboard. Section 305(b) of the Clean Water Act calls for states to monitor, assess and report on the extent of all navigable waters to provide for the protection 
+               and propagation of a balanced population of shellfish, fish, and wildlife, and allow recreational activities in and on the water. The data illustrated in the dashboard were collected using statistically-valid surveys which 
+               allow states to extrapolate the results from the sample sites to the whole population of an aquatic resource. For this reason, statistical surveys are well suited for making unbiased assessments of the condition of an entire 
+               resource across large geographic areas without monitoring every waterbody."), 
+            
+            p("The information presented are intended to assist states and the public to identify the extent of waters that support healthy ecosystems, track progress in addressing water pollution, recognize emerging problems and determine effectiveness of water management 
+               programs. To learn more about the condition of your local waters", tags$a(href='https://mywaterway.epa.gov/', "How's My Waterway.", target="blank")
+            ))
           )
         ),
         tabPanel(
@@ -87,11 +94,12 @@ server <- function(input, output, session) {
   
   observe_helpers()
   
+  #Used to hide active tab during homepage
   tp <- reactive({
     case_when(input$org_idcode==""~ '#custom .navbar-default .navbar-nav>.active>a {
-                                      background-color: transparent;
-              }', TRUE ~ '#custom .navbar-default .navbar-nav>.active>a {
-                      background-color: rgb(0, 150, 214,  0.5);
+                                                          background-color: transparent;
+                                      }', TRUE ~ '#custom .navbar-default .navbar-nav>.active>a {
+                                                          background-color: rgb(0, 150, 214,  0.7);
               }')
   })
   
@@ -126,11 +134,11 @@ server <- function(input, output, session) {
 
     session$sendCustomMessage(type = 'setHelpContent', message = list(steps = toJSON(steps)))
     
-    myObserver <- observe({
-      req(input$org_idcode!="", allindicators_data())
-      session$sendCustomMessage(type = 'startHelp', message = list(""))
-      myObserver$destroy()
-    })
+  myObserver <- observe({
+    req(input$org_idcode!="", allindicators_data())
+    session$sendCustomMessage(type = 'startHelp', message = list(""))
+    myObserver$destroy()
+  })
 
     
     
@@ -142,21 +150,21 @@ server <- function(input, output, session) {
     }
   })
   
-  observe({
-    req(input$org_idcode != "")
-    insertTab(inputId = "tabs",
-              tabPanel(value="help",
-                       div(id="step6",
-                                  icon('circle-info',
-                                  class = "help-icon fa-pull-left"),
-                       verify_fa = FALSE,
-                       span("Help",
-                       style = "font-style:italic;
-                                text-shadow: 0 3px 2px rgba(0,0,0,.75);
-                                display: flex;
-                                flex-wrap: wrap;"))
-                        ))
-  })
+  # observe({
+  #   req(input$org_idcode != "")
+  #   insertTab(inputId = "tabs",
+  #             tabPanel(value="help",
+  #                      div(id="step6",
+  #                                 icon('circle-info',
+  #                                 class = "help-icon fa-pull-left"),
+  #                      verify_fa = FALSE,
+  #                      span("Help",
+  #                      style = "font-style:italic;
+  #                               text-shadow: 0 3px 2px rgba(0,0,0,.75);
+  #                               display: flex;
+  #                               flex-wrap: wrap;"))
+  #                       ))
+  # })
   
   rv = reactiveValues()
   #trigger event on tab selection change
@@ -166,8 +174,7 @@ server <- function(input, output, session) {
     rv$last_tab = input$tabs
   })
 
-  observe({
-    req(input$tabs=="help")
+  observeEvent(input$help, {
     if(rv$last_tab == "all_indicator"){
       shinyalert(
                  imageUrl ='www/help_graphic_ALL.svg',
@@ -598,8 +605,33 @@ observeEvent(c(oneindicator_data(), input$tabs), {
     r2d3::r2d3(script="www/one_indicator.js", css="www/svg.css", dependencies = c("www/d3-textwrap.min.js", "www/tooltip.js", "www/utils.js", "www/global_var.js"), data=one_indicator_data, d3_version = "6", options = options)
   })
 })  
-  
-  session$onSessionEnded(stopApp)
+
+
+output$dwnld <- downloadHandler(
+  filename = function(){
+      if(input$tabs == "all_indicator"){
+        paste(names(ORGID_choices[ORGID_choices==input$org_id]),"_", input$resource_pop, "_", input$primary_subpop, "_Condition-Estimates-for-ALL-Condition-Categories", ".xlsx", sep = "")
+      } else {
+        paste(names(ORGID_choices[ORGID_choices==input$org_id]),"_", input$resource_pop, "_", input$primary_subpop, "_Condition-Estimates-for_", input$indicator, ".xlsx", sep = "")
+      }
+    },
+  content = function(file) {
+      if(input$tabs == "all_indicator"){  
+       databtn <- Dashboarddata() %>% select(!(ends_with("sort")))
+      } else {
+       databtn <- oneindicator_data() %>% select(!(ends_with("sort")))
+      }
+       wb <- createWorkbook(file)
+       addWorksheet(wb, "data")
+       addWorksheet(wb, "metadata")
+       writeData(wb, x = databtn, sheet = "data")
+       writeData(wb, x = metadata, sheet = "metadata")
+       saveWorkbook(wb, file)
+    },
+  contentType="application/xlsx" 
+)
+
+ session$onSessionEnded(stopApp)
 }
 
 # Run the application 

@@ -118,31 +118,63 @@ controlPanel <- function() {
         helper(type = "inline",
                icon = "circle-question",
                title = "Label Options",
-               content = c("Choose a Label to display in the dashboard."),
+               content = c("Choose a Label to display in the dashboard.",
+                           "<b>Point Estimate:</b> Represents the condition estimate for the proportion of the population.",
+                           "<b>Confidence Interval:</b> Margin of error around the estimate."),
                size = "s", easyClose = TRUE, fade = TRUE)),#div
       div(id="step5",
+          fluidRow(
       conditionalPanel(
         condition = "input.tabs == 'all_indicator'",
+          column(4, 
+                    div(id="capture_all",
         capture::capture(
           selector = "#allindicators",
           format = "jpeg",
           filename = "All_Indicators_Dashboard.png",
           icon("camera"), 
-          span("Screenshot of Dashboard", 
-               style = "font-size: 16px")
-        )
-      ),
+          "",
+          style = "font-size:25px;"
+        )),
+        bsTooltip("capture_all", "Screenshot the Dashboard",
+                  "top"))
+        ),
       conditionalPanel(
         condition = "input.tabs == 'one_indicator'",
-      capture::capture(
-        selector = "#oneindicator",
-        format = "jpeg",
-        filename = "One_Indicators_Dashboard.png",
-        icon("camera"), 
-        span("Screenshot of Dashboard", 
-             style = "font-size: 16px")
+          column(4, 
+                 div(id="capture_one",
+                     capture::capture(
+                       selector = "#oneindicator",
+                       format = "jpeg",
+                       filename = "One_Indicator_Dashboard.png",
+                       icon("camera"), 
+                       "",
+                       style = "font-size:25px;" 
+                     )),
+                 bsTooltip("capture_one", "Export Dashboard Image",
+                           "top"))
+        ),
+     conditionalPanel(
+       condition = "input.org_idcode !== ''",
+       column(4, 
+              downloadButton("dwnld", icon=icon("download"), "", 
+                             style = "background-color:#337AB7;
+                                         border-color:#FFFFFF;
+                                         color:white;
+                                         font-size:25px;"), 
+              bsTooltip("dwnld", "Download the Data",
+                        "top")),
+     column(4, 
+            actionButton("help", icon=icon('circle-info'), "",
+                         style = "background-color:#e7ad24;
+                                  border-color:#e7ad24;
+                                  color:white;
+                                  font-size:25px;"
+            ),
+            bsTooltip("help", "Help Interpretting the Dashboard",
+                      "top"))
+        )
       )
-     )
     )
-   )
+  )
 }

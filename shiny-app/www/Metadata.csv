@@ -1,0 +1,23 @@
+COLUMN NAME,DESCRIPTION
+T1_Year,Most recent survey year for the subpopulation
+Resource,Type of aquatic resource
+Subpopulation,Subpopulation estimate groups (subsets of the Resource Type)
+Units,Units the Subpopulation was measured in
+Indicator,Indicator assessed
+surveyUseCode,Designated Use or Ecological Index the Indicator was used to calculate
+Condition,"Condition category (e.g., good, fair, poor)"
+T1.P.Estimate,Point estimate of the most recent survey year-Proportion of the Resource Type
+T1.LCB,Error Bar for difference/ change assessment based on percentages--Lower confidence bound at confidence interval for most recent survey
+T1.UCB,Error Bar for difference/ change assessment based on percentages--Upper confidence bound at confidence interval for most recent survey
+confidenceLevel,Indicates the probability with which the estimation of the location of the point estimate is true for the population
+T#_Year,Year of previous surveys
+T#.P.Estimate,Point estimates of previous surveys-Proportion of the Resource Type
+T#.LCB,Error Bar for difference/ change assessment based on percentages--Lower confidence bound at confidence interval of previous surveys
+T#.UCB,Error Bar for difference/ change assessment based on percentages--Upper confidence bound at confidence interval of previous surveys
+commentText,Organization comments about the Indicators
+Survey_Size,Size of the target population (see Units column for the units of measure)
+siteNumber,Number of sites sampled in the survey
+survey_comment,Organization comments about the survey
+Condition_Size,Unit Estimate Size of Condition Category 
+T1.LCB_Size,Error Bar for difference/ change assessment based on percentages--Lower confidence bound of Condition Category size at confidence interval for most recent survey
+T1.UCB_Size,Error Bar for difference/ change assessment based on percentages--Upper confidence bound of Condition Category size at confidence interval for most recent survey
