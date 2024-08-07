@@ -40,7 +40,7 @@ Version: 0.1.4
 Imports: htmltools, jsonlite, shiny, tools
 Suggests: knitr, rmarkdown, leaflet, dygraphs
 License: GPL-3
-MD5sum: 17a3e3a0fb9680274c3579f6bab0b08c
+MD5sum: 317c8d8b3bee6b051aa00522fe79d9ec
 NeedsCompilation: no
 
 Package: cli
@@ -336,6 +336,16 @@ License: MIT + file LICENSE
 MD5sum: 13196e462bfdfa0a5821f0f3d303eda8
 NeedsCompilation: yes
 
+Package: openxlsx
+Version: 4.2.6.1
+Depends: R (>= 3.3.0)
+Imports: grDevices, methods, Rcpp, stats, stringi, utils, zip
+LinkingTo: Rcpp
+Suggests: curl, formula.tools, knitr, rmarkdown, testthat
+License: MIT + file LICENSE
+MD5sum: 3e5f60b0686e6987bcaae731dcabbb73
+NeedsCompilation: yes
+
 Package: pillar
 Version: 1.9.0
 Imports: cli (>= 2.3.0), fansi, glue, lifecycle, rlang (>= 1.0.2), utf8
@@ -411,17 +421,6 @@ Suggests: tinytest, inline, rbenchmark, pkgKitten (>= 0.1.2)
 License: GPL (>= 2)
 MD5sum: 55952693064bb5229adbb0d5146b9dda
 NeedsCompilation: yes
-
-Package: remotes
-Version: 2.5.0
-Depends: R (>= 3.0.0)
-Imports: methods, stats, tools, utils
-Suggests: brew, callr, codetools, covr, curl, git2r (>= 0.23.0), knitr,
-        mockery, pingr, pkgbuild (>= 1.0.1), rmarkdown, rprojroot,
-        testthat (>= 3.0.0), webfakes, withr
-License: MIT + file LICENSE
-MD5sum: e59fa56e2dadf40383afa84632a43e44
-NeedsCompilation: no
 
 Package: rlang
 Version: 1.1.4
@@ -677,4 +676,11 @@ Version: 2.3.10
 Suggests: RUnit
 License: BSD_3_clause + file LICENSE
 MD5sum: d9c27141ba0919211581ff57900185b7
+NeedsCompilation: yes
+
+Package: zip
+Version: 2.3.1
+Suggests: covr, processx, R6, testthat, withr
+License: MIT + file LICENSE
+MD5sum: 90932ba627e721bf81a3a5370c52b5fe
 NeedsCompilation: yes
