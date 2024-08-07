@@ -8,7 +8,7 @@ ui <-  tagList(
   # List the first level UI elements here
   tags$head(
     tags$title('ARMADA | US EPA'),
-    tags$link(rel = "stylesheet", type = "text/css", href = "style.css"),
+    tags$link(rel = "stylesheet", type = "text/css", href = "www/style.css"),
     tags$html(class = "no-js", lang = "en"),
     HTML("<div id='eq-disclaimer-banner' class='padding-1 text-center text-white bg-secondary-dark'><strong>EPA development environment:</strong> The
       content on this page is not production ready. This site is being used
