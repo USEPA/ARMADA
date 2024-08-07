@@ -1,10 +1,10 @@
-# Aquatic Resource Monitoring and Assessment Dashboard
+# Partner Dashboard
 
 ## How to Launch the Dashboard
 * You can visit the development environment here: https://partner-dashboard.app.cloud.gov/. To launch the tool locally, click the green 'Code' button and download the zip file which contains the code repository. Open the <b>app.R</b> file in RStudio for local app deployment. RStudio will recognize the Shiny script and provide a Run App button at the top of the editor pane (look for the green play triangle).
 
 ## Overview
-The Partner Dashboard, aka Aquatic Resource Monitoring and Assessment Dashboard, exports State/Territory/Tribe probability survey results from the [ATTAINS](https://www.epa.gov/waterdata/attains) Surveys module, combines data across survey years and displays the results in a user friendly data dashboard. The dashboard provides an overall picture of water quality condition across a state/territory/tribe or subpopulation by displaying the percentage of aquatic resources in different conditions for the most recent survey year available and the change from available survey years. Information presented are intended to assist states and the public to track progress in addressing water pollution, identify trends over time, recognize emerging problems and determine effectiveness of water management programs.
+The Partner Dashboard, aka Water Quality Dashboard, exports State/Territory/Tribe probability survey results from the [ATTAINS](https://www.epa.gov/waterdata/attains) Surveys module, combines data across survey years and displays the results in a user friendly data dashboard. The dashboard provides an overall picture of water quality condition across a state/territory/tribe or subpopulation by displaying the percentage of aquatic resources in different conditions for the most recent survey year available and the change from available survey years. Information presented are intended to assist states and the public to track progress in addressing water pollution, identify trends over time, recognize emerging problems and determine effectiveness of water management programs.
 
 ## Upload Survey Data
 

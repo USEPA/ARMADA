@@ -1,4 +1,4 @@
-# packages <- c("shiny","dplyr","purrr","stringr","tidyr","gfonts","httr","jsonlite","r2d3","shinyBS","shinybusy","shinyhelper","shinyalert","openxlsx")
+# packages <- c("shiny","dplyr","purrr","stringr","tidyr","gfonts","httr","jsonlite","r2d3","shinybusy","shinyhelper","shinyalert")
 # 
 # installed_packages <- packages %in% rownames(installed.packages())
 # if(any(installed_packages == FALSE)) {
