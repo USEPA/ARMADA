@@ -13,5 +13,5 @@ packages:
     - name: shinybusy
     - name: shinyhelper
     - name: shinyalert
-    - name: remotes
     - name: shinyBS
+    - name: openxlsx
