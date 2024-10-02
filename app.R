@@ -10,10 +10,10 @@ ui <-  tagList(
     tags$title('ARMADA | US EPA'),
     tags$link(rel = "stylesheet", type = "text/css", href = "www/style.css"),
     tags$html(class = "no-js", lang = "en"),
-    HTML("<div id='eq-disclaimer-banner' class='padding-1 text-center text-white bg-secondary-dark'><strong>EPA development environment:</strong> The
-      content on this page is not production ready. This site is being used
-      for <strong>development</strong> and/or <strong>testing</strong> purposes
-      only.</div>"),
+    # HTML("<div id='eq-disclaimer-banner' class='padding-1 text-center text-white bg-secondary-dark'><strong>EPA development environment:</strong> The
+    #   content on this page is not production ready. This site is being used
+    #   for <strong>development</strong> and/or <strong>testing</strong> purposes
+    #   only.</div>"),
     includeHTML("www/header.html"),
     includeCSS("www/introjs.min.css"),
     includeScript("www/intro.min.js"),
@@ -44,13 +44,15 @@ ui <-  tagList(
                            c("State/Territory/Tribe"="", ORGID)
                ),
                column(12, align="left",
-            p("Welcome to the Aquatic Resource Monitoring and Assessment Dashboard. Section 305(b) of the Clean Water Act calls for states to monitor, assess and report on the extent of all navigable waters to provide for the protection 
-               and propagation of a balanced population of shellfish, fish, and wildlife, and allow recreational activities in and on the water. The data illustrated in the dashboard were collected using statistically-valid surveys which 
-               allow states to extrapolate the results from the sample sites to the whole population of an aquatic resource. For this reason, statistical surveys are well suited for making unbiased assessments of the condition of an entire 
-               resource across large geographic areas without monitoring every waterbody."), 
+            p("Welcome to the Aquatic Resource Monitoring and Assessment Dashboard. Section 305(b) of the Clean Water Act calls for states to assess and report on the extent of all navigable waters to provide for the protection and propagation of a balanced population of 
+              shellfish, fish, and wildlife, and allow recreational activities in and on the water. As part of their monitoring programs, states implement both site-specific water quality assessment that help them set local priorities and implement actions for restoring 
+              degraded waters as well as statistical survey designs that provide broader context of the condition of all state waters. The data underlying the assessments illustrated in this dashboard were collected using statistically-valid 
+              surveys which allow states to make unbiased assessments of the condition of an entire aquatic resource across large geographic areas without monitoring every waterbody. "), 
             
-            p("The information presented are intended to assist states and the public to identify the extent of waters that support healthy ecosystems, track progress in addressing water pollution, recognize emerging problems and determine effectiveness of water management 
-               programs. To learn more about the condition of your local waters", tags$a(href='https://mywaterway.epa.gov/', "How's My Waterway.", target="blank")
+            p("The information presented is intended to assist states and the public in identifying the extent of waters that support healthy ecosystems, track progress in addressing water pollution, recognize emerging problems and determine effectiveness of water management 
+              programs. The methods states use to monitor and assess their waters - including what they monitor, how they monitor, and how they interpret and report their findings - vary from state to state and within individual states over time. Thus, the assessment 
+              decisions reported, while valuable for each state and Tribe individually, cannot be used to compare water quality conditions among states and Tribes or be combined to report national water quality conditions and trends or compare the impacts of specific 
+              causes or sources of impairment over time. To learn more about the condition of your local waters visit", tags$a(href='https://mywaterway.epa.gov/', "How's My Waterway.", target="blank")
             ))
           )
         ),
@@ -143,6 +145,7 @@ server <- function(input, output, session) {
     
     
   # Example: https://rstudio-connect.dmap-stage.aws.epa.gov/content/74a7f241-6aa1-49e7-99c2-3a5278363e29/?org_idcode=WIDNR
+  # https://https://rconnect-public.epa.gov/armada/?org_idcode=WIDNR
   observe({
     query <- parseQueryString(session$clientData$url_search)
     if(!is.null(query[['org_idcode']])) {
@@ -631,7 +634,7 @@ output$dwnld <- downloadHandler(
   contentType="application/xlsx" 
 )
 
- session$onSessionEnded(stopApp)
+ #session$onSessionEnded(stopApp)
 }
 
 # Run the application 

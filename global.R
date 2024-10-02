@@ -1,4 +1,4 @@
-# packages <- c("shiny","dplyr","purrr","stringr","tidyr","gfonts","httr","jsonlite","r2d3","shinybusy","shinyhelper","shinyalert")
+# packages <- c("shiny","dplyr","purrr","stringr","tidyr","gfonts","httr","jsonlite","r2d3","shinybusy","shinyhelper","shinyalert","shinyBS","openxlsx","bslib")
 # 
 # installed_packages <- packages %in% rownames(installed.packages())
 # if(any(installed_packages == FALSE)) {
@@ -28,6 +28,7 @@ library(shinyBS)
 library(shinyhelper)
 library(shinybusy)
 library(openxlsx)
+
 
 metadata <- read.csv("www/Metadata.csv")
 

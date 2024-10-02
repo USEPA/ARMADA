@@ -15,7 +15,7 @@
 #
 # 
 # 
-#url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=AKDECWQ")
+#url <- paste0("https://attains.epa.gov/attains-public/api/surveys?organizationId=WYDEQ")
 # ATTAINS API ----
 # Connect to ATTAINS database and pull survey data by Organization ID 
 
@@ -44,10 +44,9 @@ resource <- pluck(df$waterTypeGroupCode)
 subpop <- pluck(df$subPopulationCode)
 year <- pluck(df$Year)
 units <- pluck(df$unitCode)
-survey_comment <- df %>% mutate(Year=as.numeric(Year)) %>% filter(Year==max(Year)) %>%
-  select(T1_Year=Year, Resource=waterTypeGroupCode, Subpopulation=subPopulationCode, Units=unitCode, Survey_Size=size, siteNumber, survey_comment=surveyWaterGroupCommentText) %>%
-  #remove_rownames() %>% 
-  pluck()
+survey_comment <- df %>% mutate(Year=as.numeric(Year)) %>%
+  select(T1_Year=Year, Resource=waterTypeGroupCode, Subpopulation=subPopulationCode, Units=unitCode, Survey_Size=size, siteNumber, survey_comment=surveyWaterGroupCommentText)
+
 row.names(survey_comment) <- NULL
 
 df2 <- list_flatten(df$surveyWaterGroupUseParameters) %>%
